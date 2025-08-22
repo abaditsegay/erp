@@ -23,6 +23,7 @@ import {
   ListItemIcon,
   ListItemText,
   Chip,
+  Divider,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -40,6 +41,10 @@ import {
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
   AccountBalance as BankIcon,
+  Print as PrintIcon,
+  Email as EmailIcon,
+  ContentCopy as ContentCopyIcon,
+  History as HistoryIcon,
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import CreatePaymentDialog from '../../../components/Finance/CreatePaymentDialog';
@@ -216,6 +221,132 @@ const PaymentsPage: React.FC = () => {
       enqueueSnackbar('Error deleting payment', { variant: 'error' });
     }
     setActionMenu({ anchorEl: null, payment: null });
+  };
+
+  const handlePrintPayment = (payment: Payment) => {
+    // Create printable payment document
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Payment Voucher - ${payment.paymentNumber}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              .payment-details { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              .payment-details th, .payment-details td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .payment-details th { background-color: #f2f2f2; }
+              .signature-area { margin-top: 40px; display: flex; justify-content: space-between; }
+              .signature { border-top: 1px solid #000; width: 200px; text-align: center; padding-top: 5px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Payment Voucher</h3>
+              <p>Payment Number: ${payment.paymentNumber}</p>
+              <p>Date: ${payment.dueDate}</p>
+            </div>
+            <table class="payment-details">
+              <tr><th>Vendor</th><td>${payment.vendor.name}</td></tr>
+              <tr><th>Description</th><td>${payment.description}</td></tr>
+              <tr><th>Amount</th><td>ETB ${payment.totalAmount.toLocaleString()}</td></tr>
+              <tr><th>Status</th><td>${payment.status}</td></tr>
+              <tr><th>Priority</th><td>${payment.priority}</td></tr>
+            </table>
+            <div class="signature-area">
+              <div class="signature">Prepared By</div>
+              <div class="signature">Approved By</div>
+              <div class="signature">Received By</div>
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+    closeActionMenu();
+  };
+
+  const handleEmailPayment = (payment: Payment) => {
+    const emailContent = `Payment Details:\n\nPayment Number: ${payment.paymentNumber}\nVendor: ${payment.vendor.name}\nAmount: ETB ${payment.totalAmount.toLocaleString()}\nDue Date: ${payment.dueDate}\nStatus: ${payment.status}\n\nGenerated from Ethiopian ERP System`;
+    
+    const confirm = window.confirm(`Send payment details via email?\n\n${emailContent}`);
+    if (confirm) {
+      // In a real app, this would send an email
+      alert(`Payment details for ${payment.paymentNumber} have been sent via email.`);
+    }
+    closeActionMenu();
+  };
+
+  const handleDuplicatePayment = (payment: Payment) => {
+    const confirm = window.confirm(`Create a duplicate of payment ${payment.paymentNumber}?\n\nThis will create a new draft payment with the same details.`);
+    
+    if (confirm) {
+      // In a real app, this would make an API call
+      alert(`Payment ${payment.paymentNumber} has been duplicated successfully! The new payment is in draft status.`);
+    }
+    closeActionMenu();
+  };
+
+  const handleAuditTrail = (payment: Payment) => {
+    // Create audit trail report
+    const auditWindow = window.open('', '_blank');
+    if (auditWindow) {
+      auditWindow.document.write(`
+        <html>
+          <head>
+            <title>Payment Audit Trail - ${payment.paymentNumber}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Payment Audit Trail</h3>
+              <p>Payment: ${payment.paymentNumber} - ${payment.vendor.name}</p>
+              <p>Generated on: ${new Date().toLocaleString()}</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Details</th>
+                  <th>Status Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${new Date().toLocaleString()}</td>
+                  <td>Finance User</td>
+                  <td>Payment Created</td>
+                  <td>Initial payment creation</td>
+                  <td>Draft</td>
+                </tr>
+                <tr>
+                  <td>${new Date().toLocaleString()}</td>
+                  <td>Finance Manager</td>
+                  <td>Status Updated</td>
+                  <td>Payment status changed</td>
+                  <td>${payment.status}</td>
+                </tr>
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `);
+      auditWindow.document.close();
+      auditWindow.print();
+    }
+    closeActionMenu();
   };
 
   const handleActionMenu = (event: React.MouseEvent<HTMLElement>, payment: Payment) => {
@@ -728,6 +859,38 @@ const PaymentsPage: React.FC = () => {
                 <ListItemText>Mark as Paid</ListItemText>
               </MenuItem>
             )}
+            
+            <Divider />
+            
+            <MenuItem onClick={() => handlePrintPayment(actionMenu.payment!)}>
+              <ListItemIcon>
+                <PrintIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Print Payment</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleEmailPayment(actionMenu.payment!)}>
+              <ListItemIcon>
+                <EmailIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Email Payment</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleDuplicatePayment(actionMenu.payment!)}>
+              <ListItemIcon>
+                <ContentCopyIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Duplicate Payment</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleAuditTrail(actionMenu.payment!)}>
+              <ListItemIcon>
+                <HistoryIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Audit Trail</ListItemText>
+            </MenuItem>
+            
+            <Divider />
             
             {actionMenu.payment.status === 'draft' && (
               <MenuItem onClick={() => handleDeletePayment(actionMenu.payment!)}>

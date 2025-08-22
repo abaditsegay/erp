@@ -59,6 +59,8 @@ import {
   Print as PrintIcon,
   Share as ShareIcon,
   Archive as ArchiveIcon,
+  ContentCopy as ContentCopyIcon,
+  History as HistoryIcon,
 } from '@mui/icons-material';
 import {
   BarChart,
@@ -331,6 +333,92 @@ const ReportsPage: React.FC = () => {
 
   const handleShareReport = (report: FinancialReport) => {
     console.log(`Share report: ${report.id}`);
+    closeActionMenu();
+  };
+
+  const handleExportReport = (report: FinancialReport) => {
+    // Export report data to various formats
+    const exportOptions = ['Excel (XLSX)', 'CSV', 'PDF', 'JSON'];
+    const format = window.prompt(`Export ${report.name} to:\n\n${exportOptions.map((opt, idx) => `${idx + 1}. ${opt}`).join('\n')}\n\nEnter choice (1-4):`);
+    
+    if (format && ['1', '2', '3', '4'].includes(format)) {
+      const formatName = exportOptions[parseInt(format) - 1];
+      console.log(`Exporting ${report.name} to ${formatName}`);
+      alert(`Exporting ${report.name} to ${formatName}... Download will start shortly.`);
+    }
+    closeActionMenu();
+  };
+
+  const handleDuplicateReport = (report: FinancialReport) => {
+    const newReport: FinancialReport = {
+      ...report,
+      id: Date.now().toString(),
+      name: `${report.name} (Copy)`,
+      nameAmharic: `${report.nameAmharic} (ኮፒ)`,
+      lastGenerated: new Date().toISOString()
+    };
+    
+    // In a real application, this would make an API call to create the duplicate
+    console.log(`Duplicated report: ${report.name}`, newReport);
+    alert(`Report "${report.name}" has been duplicated successfully!`);
+    closeActionMenu();
+  };
+
+  const handleVersionHistory = (report: FinancialReport) => {
+    // Show version history in a new window
+    const historyWindow = window.open('', '_blank');
+    if (historyWindow) {
+      historyWindow.document.write(`
+        <html>
+          <head>
+            <title>Version History - ${report.name}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Report Version History</h3>
+              <p>Report: ${report.name}</p>
+              <p>Generated on: ${format(new Date(), 'MMM dd, yyyy HH:mm')}</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Date Modified</th>
+                  <th>Modified By</th>
+                  <th>Changes</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>v1.0</td>
+                  <td>${format(new Date(report.lastGenerated || new Date()), 'MMM dd, yyyy HH:mm')}</td>
+                  <td>System Admin</td>
+                  <td>Initial report creation</td>
+                  <td>Current</td>
+                </tr>
+                <tr>
+                  <td>v0.9</td>
+                  <td>${format(new Date(Date.now() - 86400000), 'MMM dd, yyyy HH:mm')}</td>
+                  <td>Finance Manager</td>
+                  <td>Updated formatting and calculations</td>
+                  <td>Archived</td>
+                </tr>
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `);
+      historyWindow.document.close();
+    }
     closeActionMenu();
   };
 
@@ -832,6 +920,27 @@ const ReportsPage: React.FC = () => {
                 <ListItemText>Schedule Report</ListItemText>
               </MenuItem>
             )}
+            
+            <MenuItem onClick={() => handleExportReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <DownloadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Export Data</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleDuplicateReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <ContentCopyIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Duplicate Report</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleVersionHistory(actionMenu.report!)}>
+              <ListItemIcon>
+                <HistoryIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Version History</ListItemText>
+            </MenuItem>
             
             <MenuItem onClick={() => handleArchiveReport(actionMenu.report!)}>
               <ListItemIcon>

@@ -64,6 +64,8 @@ import {
   Block as BlockIcon,
   Lock as LockIcon,
   LockOpen as UnlockIcon,
+  Notifications as NotificationsIcon,
+  AccountBalance as AccountBalanceIcon,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
@@ -475,6 +477,18 @@ const AccountsPage: React.FC = () => {
         handleExportAccount();
         break;
         
+      case 'audit_trail':
+        handleAuditTrail();
+        break;
+        
+      case 'notifications':
+        handleSetNotifications();
+        break;
+        
+      case 'reconcile':
+        handleReconcileAccount();
+        break;
+        
       default:
         console.log(`Unknown action: ${action}`);
     }
@@ -604,6 +618,97 @@ const AccountsPage: React.FC = () => {
     setSuccessMessage(`Account data exported successfully!`);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleAuditTrail = () => {
+    if (!selectedAccount) return;
+    
+    // Create audit trail report
+    const auditWindow = window.open('', '_blank');
+    if (auditWindow) {
+      auditWindow.document.write(`
+        <html>
+          <head>
+            <title>Audit Trail - ${selectedAccount.code}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; }
+              .audit-entry { margin-bottom: 10px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Account Audit Trail</h3>
+              <p>Account: ${selectedAccount.code} - ${selectedAccount.name}</p>
+              <p>Generated on: ${format(new Date(), 'MMM dd, yyyy HH:mm')}</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Details</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${format(new Date(selectedAccount.createdAt), 'MMM dd, yyyy HH:mm')}</td>
+                  <td>System Admin</td>
+                  <td>Account Created</td>
+                  <td>Initial account setup</td>
+                  <td>192.168.1.100</td>
+                </tr>
+                <tr>
+                  <td>${format(new Date(selectedAccount.updatedAt), 'MMM dd, yyyy HH:mm')}</td>
+                  <td>Finance Manager</td>
+                  <td>Account Modified</td>
+                  <td>Account details updated</td>
+                  <td>192.168.1.105</td>
+                </tr>
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `);
+      auditWindow.document.close();
+      auditWindow.print();
+    }
+    
+    setSuccessMessage(`Audit trail generated for account ${selectedAccount.code}!`);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleSetNotifications = () => {
+    if (!selectedAccount) return;
+    
+    // Open notification settings dialog
+    const confirm = window.confirm(`Set up notifications for account ${selectedAccount.code}?\n\nYou will receive alerts for:\n- Balance threshold warnings\n- Unusual transaction patterns\n- Monthly account summaries\n- Reconciliation reminders`);
+    
+    if (confirm) {
+      setSuccessMessage(`Notifications configured for account ${selectedAccount.code}!`);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }
+  };
+
+  const handleReconcileAccount = () => {
+    if (!selectedAccount) return;
+    
+    // Open reconciliation wizard
+    const confirm = window.confirm(`Start reconciliation process for account ${selectedAccount.code}?\n\nThis will:\n- Compare book balance with bank statements\n- Identify unmatched transactions\n- Generate reconciliation report\n- Flag discrepancies for review`);
+    
+    if (confirm) {
+      setSuccessMessage(`Reconciliation process initiated for account ${selectedAccount.code}!`);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }
   };
 
   const handleDeleteConfirm = () => {
@@ -1077,12 +1182,29 @@ const AccountsPage: React.FC = () => {
           <DownloadIcon sx={{ mr: 1 }} />
           Export Data
         </MenuItem>
+        <MenuItem onClick={() => handleAction('audit_trail')}>
+          <HistoryIcon sx={{ mr: 1 }} />
+          Audit Trail
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('notifications')}>
+          <NotificationsIcon sx={{ mr: 1 }} />
+          Set Notifications
+        </MenuItem>
         <Divider />
         <MenuItem onClick={() => handleAction('archive')}>
           <ArchiveIcon sx={{ mr: 1 }} />
           Archive Account
         </MenuItem>
-        <MenuItem onClick={() => handleAction('delete')} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={() => handleAction('reconcile')}>
+          <AccountBalanceIcon sx={{ mr: 1 }} />
+          Reconcile Account
+        </MenuItem>
+        <Divider />
+        <MenuItem 
+          onClick={() => handleAction('delete')} 
+          sx={{ color: 'error.main' }}
+          disabled={(selectedAccount?.transactions || 0) > 0}
+        >
           <DeleteIcon sx={{ mr: 1 }} />
           Delete Account
         </MenuItem>

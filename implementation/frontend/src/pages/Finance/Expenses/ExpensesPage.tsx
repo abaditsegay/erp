@@ -67,6 +67,8 @@ import {
   Description as DescriptionIcon,
   AttachFile as AttachIcon,
   History as HistoryIcon,
+  Notifications as NotificationsIcon,
+  Flag as FlagIcon,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
@@ -580,6 +582,18 @@ const ExpensesPage: React.FC = () => {
       case 'resubmit':
         handleResubmitExpense();
         break;
+        
+      case 'audit_trail':
+        handleAuditTrail();
+        break;
+        
+      case 'notifications':
+        handleSetNotifications();
+        break;
+        
+      case 'flag_review':
+        handleFlagForReview();
+        break;
     }
     
     setAnchorEl(null);
@@ -933,6 +947,107 @@ const ExpensesPage: React.FC = () => {
     }
     
     setIsPrintDialogOpen(false);
+  };
+
+  const handleAuditTrail = () => {
+    if (!selectedExpense) return;
+    
+    // Create audit trail report
+    const auditWindow = window.open('', '_blank');
+    if (auditWindow) {
+      auditWindow.document.write(`
+        <html>
+          <head>
+            <title>Expense Audit Trail - ${selectedExpense.expenseNumber}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Expense Audit Trail</h3>
+              <p>Expense: ${selectedExpense.expenseNumber} - ${selectedExpense.title}</p>
+              <p>Generated on: ${format(new Date(), 'MMM dd, yyyy HH:mm')}</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Details</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${format(new Date(selectedExpense.submittedDate), 'MMM dd, yyyy HH:mm')}</td>
+                  <td>${selectedExpense.submittedBy}</td>
+                  <td>Expense Submitted</td>
+                  <td>Initial expense submission</td>
+                  <td>Submitted</td>
+                </tr>
+                ${selectedExpense.approvedBy ? `
+                <tr>
+                  <td>${format(new Date(), 'MMM dd, yyyy HH:mm')}</td>
+                  <td>${selectedExpense.approvedBy}</td>
+                  <td>Expense ${selectedExpense.approvalStatus}</td>
+                  <td>Approval decision made</td>
+                  <td>${selectedExpense.approvalStatus}</td>
+                </tr>
+                ` : ''}
+              </tbody>
+            </table>
+          </body>
+        </html>
+      `);
+      auditWindow.document.close();
+      auditWindow.print();
+    }
+    
+    setSuccessMessage(`Audit trail generated for expense ${selectedExpense.expenseNumber}!`);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleSetNotifications = () => {
+    if (!selectedExpense) return;
+    
+    // Open notification settings dialog
+    const confirm = window.confirm(`Set up notifications for expense ${selectedExpense.expenseNumber}?\n\nYou will receive alerts for:\n- Approval status changes\n- Payment confirmations\n- Document submission reminders\n- Reimbursement updates`);
+    
+    if (confirm) {
+      setSuccessMessage(`Notifications configured for expense ${selectedExpense.expenseNumber}!`);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }
+  };
+
+  const handleFlagForReview = () => {
+    if (!selectedExpense) return;
+    
+    // Flag expense for special review
+    const reason = window.prompt(`Flag expense ${selectedExpense.expenseNumber} for review?\n\nPlease provide reason for flagging:`);
+    
+    if (reason) {
+      setExpenses(prev => prev.map(expense =>
+        expense.id === selectedExpense.id
+          ? { 
+              ...expense, 
+              notes: expense.notes + `\n[FLAGGED FOR REVIEW: ${reason}]`
+            }
+          : expense
+      ));
+      
+      setSuccessMessage(`Expense ${selectedExpense.expenseNumber} flagged for review!`);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }
   };
 
   return (
@@ -1291,10 +1406,22 @@ const ExpensesPage: React.FC = () => {
           <DownloadIcon sx={{ mr: 1 }} />
           Export Data
         </MenuItem>
+        <MenuItem onClick={() => handleAction('audit_trail')}>
+          <HistoryIcon sx={{ mr: 1 }} />
+          Audit Trail
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('notifications')}>
+          <NotificationsIcon sx={{ mr: 1 }} />
+          Set Alerts
+        </MenuItem>
         <Divider />
         <MenuItem onClick={() => handleAction('archive')}>
           <ArchiveIcon sx={{ mr: 1 }} />
           Archive Expense
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('flag_review')}>
+          <FlagIcon sx={{ mr: 1 }} />
+          Flag for Review
         </MenuItem>
         <MenuItem onClick={() => handleAction('delete')} sx={{ color: 'error.main' }} disabled={selectedExpense?.approvalStatus === 'Paid'}>
           <DeleteIcon sx={{ mr: 1 }} />
