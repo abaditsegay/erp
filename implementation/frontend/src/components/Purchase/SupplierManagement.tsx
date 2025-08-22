@@ -45,6 +45,8 @@ import {
 } from '@mui/icons-material';
 import { useMockPurchaseData } from '../../contexts/MockPurchaseDataProvider';
 import { EthiopianSupplier, SupplierType } from '../../types/purchase';
+import AddSupplierDialog from './AddSupplierDialog';
+import AdvancedFiltersDialog from './AdvancedFiltersDialog';
 
 // Get supplier type color
 const getSupplierTypeColor = (type: SupplierType) => {
@@ -231,16 +233,67 @@ const SupplierManagement: React.FC = () => {
   const [filterType, setFilterType] = useState<string>('ALL');
   const [selectedSupplier, setSelectedSupplier] = useState<EthiopianSupplier | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [addSupplierOpen, setAddSupplierOpen] = useState(false);
+  const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState<any>({});
+  const [allSuppliers, setAllSuppliers] = useState<EthiopianSupplier[]>(suppliers);
 
-  // Filter suppliers based on search and type filter
-  const filteredSuppliers = suppliers.filter(supplier => {
+  // Filter suppliers based on search, type filter, and advanced filters
+  const filteredSuppliers = allSuppliers.filter(supplier => {
     const matchesSearch = supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          supplier.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          supplier.contactPerson.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesType = filterType === 'ALL' || supplier.supplierType === filterType;
     
-    return matchesSearch && matchesType;
+    // Apply advanced filters
+    let matchesAdvanced = true;
+    
+    if (advancedFilters.supplierTypes?.length > 0) {
+      matchesAdvanced = matchesAdvanced && advancedFilters.supplierTypes.includes(supplier.supplierType);
+    }
+    
+    if (advancedFilters.regions?.length > 0) {
+      matchesAdvanced = matchesAdvanced && advancedFilters.regions.includes(supplier.address?.region);
+    }
+    
+    if (advancedFilters.cities?.length > 0) {
+      matchesAdvanced = matchesAdvanced && advancedFilters.cities.includes(supplier.address?.city);
+    }
+    
+    if (advancedFilters.ratingRange) {
+      const rating = supplier.rating || 0;
+      matchesAdvanced = matchesAdvanced && 
+        rating >= advancedFilters.ratingRange[0] && 
+        rating <= advancedFilters.ratingRange[1];
+    }
+    
+    if (advancedFilters.isActive !== null) {
+      matchesAdvanced = matchesAdvanced && supplier.isActive === advancedFilters.isActive;
+    }
+    
+    if (advancedFilters.hasEmail) {
+      matchesAdvanced = matchesAdvanced && !!supplier.email;
+    }
+    
+    if (advancedFilters.hasWebsite) {
+      // Since website is not in the supplier interface, we'll skip this filter
+      // or you could add website to the EthiopianSupplier interface
+    }
+    
+    if (advancedFilters.searchInDescription) {
+      // Since description is not in the supplier interface, we'll search in other fields
+      matchesAdvanced = matchesAdvanced && 
+        (supplier.name.toLowerCase().includes(advancedFilters.searchInDescription.toLowerCase()) ||
+         supplier.contactPerson.toLowerCase().includes(advancedFilters.searchInDescription.toLowerCase()));
+    }
+    
+    if (advancedFilters.searchInContactPerson) {
+      matchesAdvanced = matchesAdvanced && 
+        supplier.contactPerson.toLowerCase().includes(advancedFilters.searchInContactPerson.toLowerCase());
+    }
+    
+    return matchesSearch && matchesType && matchesAdvanced;
   });
 
   const handleViewSupplier = (supplier: EthiopianSupplier) => {
@@ -251,6 +304,18 @@ const SupplierManagement: React.FC = () => {
   const handleCloseDetailDialog = () => {
     setDetailDialogOpen(false);
     setSelectedSupplier(null);
+  };
+
+  const handleAddSupplier = (supplierData: any) => {
+    const newSupplier: EthiopianSupplier = {
+      ...supplierData,
+      id: Date.now(),
+    };
+    setAllSuppliers(prev => [newSupplier, ...prev]);
+  };
+
+  const handleApplyAdvancedFilters = (filters: any) => {
+    setAdvancedFilters(filters);
   };
 
   // Get supplier stats
@@ -387,6 +452,7 @@ const SupplierManagement: React.FC = () => {
                 variant="outlined"
                 startIcon={<FilterList />}
                 fullWidth
+                onClick={() => setAdvancedFiltersOpen(true)}
               >
                 Advanced Filters
               </Button>
@@ -396,6 +462,7 @@ const SupplierManagement: React.FC = () => {
                 variant="contained"
                 startIcon={<Add />}
                 fullWidth
+                onClick={() => setAddSupplierOpen(true)}
               >
                 Add Supplier
               </Button>
@@ -508,6 +575,21 @@ const SupplierManagement: React.FC = () => {
         supplier={selectedSupplier}
         open={detailDialogOpen}
         onClose={handleCloseDetailDialog}
+      />
+
+      {/* Add Supplier Dialog */}
+      <AddSupplierDialog
+        open={addSupplierOpen}
+        onClose={() => setAddSupplierOpen(false)}
+        onSubmit={handleAddSupplier}
+      />
+
+      {/* Advanced Filters Dialog */}
+      <AdvancedFiltersDialog
+        open={advancedFiltersOpen}
+        onClose={() => setAdvancedFiltersOpen(false)}
+        onApplyFilters={handleApplyAdvancedFilters}
+        currentFilters={advancedFilters}
       />
     </Box>
   );
