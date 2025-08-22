@@ -53,6 +53,8 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
+import CreateCustomsEntryDialog from '../../components/Logistics/CreateCustomsEntryDialog';
+
 // Mock data for customs clearance
 const mockCustomsEntries = [
   {
@@ -214,12 +216,13 @@ const formatCurrency = (amount: number, currency: string) => {
 
 const CustomsClearancePage: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [customsEntries] = useState(mockCustomsEntries);
+  const [customsEntries, setCustomsEntries] = useState(mockCustomsEntries);
   const [filteredEntries, setFilteredEntries] = useState(mockCustomsEntries);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [createEntryOpen, setCreateEntryOpen] = useState(false);
 
   // Filter entries based on search and status
   useEffect(() => {
@@ -247,6 +250,15 @@ const CustomsClearancePage: React.FC = () => {
   const handleViewEntry = (entry: any) => {
     setSelectedEntry(entry);
     setDialogOpen(true);
+  };
+
+  const handleCreateEntry = (entryData: any) => {
+    const newEntry = {
+      ...entryData,
+      createdDate: new Date(),
+    };
+    setCustomsEntries(prev => [newEntry, ...prev]);
+    setFilteredEntries(prev => [newEntry, ...prev]);
   };
 
   // Calculate statistics
@@ -392,7 +404,7 @@ const CustomsClearancePage: React.FC = () => {
                   variant="contained"
                   startIcon={<AddIcon />}
                   fullWidth
-                  onClick={() => alert('Create customs entry functionality will be implemented')}
+                  onClick={() => setCreateEntryOpen(true)}
                 >
                   New Entry
                 </Button>
@@ -674,6 +686,12 @@ const CustomsClearancePage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <CreateCustomsEntryDialog
+        open={createEntryOpen}
+        onClose={() => setCreateEntryOpen(false)}
+        onSubmit={handleCreateEntry}
+      />
     </Box>
   );
 };

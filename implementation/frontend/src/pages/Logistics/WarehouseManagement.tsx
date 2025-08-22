@@ -52,6 +52,8 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
+import AddWarehouseDialog from '../../components/Logistics/AddWarehouseDialog';
+
 // Mock data for Ethiopian warehouses
 const mockWarehouses = [
   {
@@ -222,7 +224,7 @@ const getCapacityPercentage = (used: number, total: number) => {
 
 const WarehouseManagementPage: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [warehouses] = useState(mockWarehouses);
+  const [warehouses, setWarehouses] = useState(mockWarehouses);
   const [inventoryItems] = useState(mockInventoryItems);
   const [filteredWarehouses, setFilteredWarehouses] = useState(mockWarehouses);
   const [filteredInventory] = useState(mockInventoryItems);
@@ -230,6 +232,7 @@ const WarehouseManagementPage: React.FC = () => {
   const [regionFilter, setRegionFilter] = useState('all');
   const [selectedWarehouse, setSelectedWarehouse] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [addWarehouseOpen, setAddWarehouseOpen] = useState(false);
 
   // Filter warehouses based on search and region
   useEffect(() => {
@@ -257,6 +260,24 @@ const WarehouseManagementPage: React.FC = () => {
   const handleViewWarehouse = (warehouse: any) => {
     setSelectedWarehouse(warehouse);
     setDialogOpen(true);
+  };
+
+  const handleAddWarehouse = (warehouseData: any) => {
+    const newWarehouse = {
+      ...warehouseData,
+      id: `WH${Date.now().toString().slice(-3)}`,
+      status: 'active',
+      capacity: {
+        total: warehouseData.capacity?.total || 1000,
+        used: 0,
+        available: warehouseData.capacity?.total || 1000,
+      },
+      lastActivity: new Date(),
+      inventoryValue: 0,
+      manager: warehouseData.manager || 'TBD',
+    };
+    setWarehouses(prev => [newWarehouse, ...prev]);
+    setFilteredWarehouses(prev => [newWarehouse, ...prev]);
   };
 
   // Calculate totals
@@ -409,7 +430,7 @@ const WarehouseManagementPage: React.FC = () => {
                   variant="contained"
                   startIcon={<AddIcon />}
                   fullWidth
-                  onClick={() => alert('Add warehouse functionality will be implemented')}
+                  onClick={() => setAddWarehouseOpen(true)}
                 >
                   Add Warehouse
                 </Button>
@@ -683,6 +704,12 @@ const WarehouseManagementPage: React.FC = () => {
           <Button onClick={() => setDialogOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
+
+      <AddWarehouseDialog
+        open={addWarehouseOpen}
+        onClose={() => setAddWarehouseOpen(false)}
+        onSubmit={handleAddWarehouse}
+      />
     </Box>
   );
 };

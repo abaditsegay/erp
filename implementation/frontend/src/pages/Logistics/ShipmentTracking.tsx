@@ -50,6 +50,8 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
+import CreateShipmentDialog from '../../components/Logistics/CreateShipmentDialog';
+
 // Mock data - In real app, this would come from API
 const mockShipments = [
   {
@@ -193,12 +195,13 @@ const formatCurrency = (amount: number, currency: string) => {
 };
 
 const ShipmentTrackingPage: React.FC = () => {
-  const [shipments] = useState(mockShipments);
+  const [shipments, setShipments] = useState(mockShipments);
   const [filteredShipments, setFilteredShipments] = useState(mockShipments);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedShipment, setSelectedShipment] = useState<any>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [createShipmentOpen, setCreateShipmentOpen] = useState(false);
 
   // Filter shipments based on search and status
   useEffect(() => {
@@ -223,6 +226,18 @@ const ShipmentTrackingPage: React.FC = () => {
   const handleViewShipment = (shipment: any) => {
     setSelectedShipment(shipment);
     setDialogOpen(true);
+  };
+
+  const handleCreateShipment = (shipmentData: any) => {
+    const newShipment = {
+      ...shipmentData,
+      id: `SH${Date.now().toString().slice(-3)}`,
+      trackingNumber: `ETH${Date.now().toString().slice(-6)}`,
+      status: 'created',
+      createdDate: new Date(),
+    };
+    setShipments(prev => [newShipment, ...prev]);
+    setFilteredShipments(prev => [newShipment, ...prev]);
   };
 
   const getDeliveryProgress = (shipment: any) => {
@@ -363,7 +378,7 @@ const ShipmentTrackingPage: React.FC = () => {
               variant="contained"
               startIcon={<AddIcon />}
               fullWidth
-              onClick={() => alert('Create shipment functionality will be implemented')}
+              onClick={() => setCreateShipmentOpen(true)}
             >
               Create Shipment
             </Button>
@@ -571,6 +586,12 @@ const ShipmentTrackingPage: React.FC = () => {
           <Button onClick={() => setDialogOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
+
+      <CreateShipmentDialog
+        open={createShipmentOpen}
+        onClose={() => setCreateShipmentOpen(false)}
+        onSubmit={handleCreateShipment}
+      />
     </Box>
   );
 };
