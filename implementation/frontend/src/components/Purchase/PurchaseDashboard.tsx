@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -124,6 +125,26 @@ const DashboardCard: React.FC<DashboardCardProps> = ({
 
 const PurchaseDashboard: React.FC = () => {
   const { dashboard, exchangeRate } = useMockPurchaseData();
+  const navigate = useNavigate();
+
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'create-purchase-order':
+        navigate('/purchase/orders');
+        break;
+      case 'add-supplier':
+        navigate('/purchase/suppliers');
+        break;
+      case 'create-requisition':
+        navigate('/purchase/requisitions');
+        break;
+      case 'process-payment':
+        navigate('/finance/payments');
+        break;
+      default:
+        console.log('Unknown action:', action);
+    }
+  };
 
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -411,6 +432,7 @@ const PurchaseDashboard: React.FC = () => {
                 fullWidth 
                 startIcon={<ShoppingCart />}
                 color="primary"
+                onClick={() => handleQuickAction('create-purchase-order')}
               >
                 Create Purchase Order
               </Button>
@@ -421,6 +443,7 @@ const PurchaseDashboard: React.FC = () => {
                 fullWidth 
                 startIcon={<People />}
                 color="primary"
+                onClick={() => handleQuickAction('add-supplier')}
               >
                 Add New Supplier
               </Button>
@@ -431,6 +454,7 @@ const PurchaseDashboard: React.FC = () => {
                 fullWidth 
                 startIcon={<Assignment />}
                 color="secondary"
+                onClick={() => handleQuickAction('create-requisition')}
               >
                 Create Requisition
               </Button>
@@ -441,6 +465,7 @@ const PurchaseDashboard: React.FC = () => {
                 fullWidth 
                 startIcon={<AttachMoney />}
                 color="success"
+                onClick={() => handleQuickAction('process-payment')}
               >
                 Process Payment
               </Button>

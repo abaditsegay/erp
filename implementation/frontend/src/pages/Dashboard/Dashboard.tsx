@@ -14,7 +14,8 @@ import {
   People,
   ShoppingCart,
   Inventory,
-  Assessment,
+  AttachMoney,
+  Assignment,
 } from '@mui/icons-material';
 
 const Dashboard: React.FC = () => {
@@ -24,6 +25,15 @@ const Dashboard: React.FC = () => {
     switch (action) {
       case 'create-purchase-order':
         navigate('/purchase/orders');
+        break;
+      case 'add-new-supplier':
+        navigate('/purchase/suppliers');
+        break;
+      case 'create-requisition':
+        navigate('/purchase/requisitions');
+        break;
+      case 'process-payment':
+        navigate('/finance/payments');
         break;
       case 'add-new-item':
         navigate('/inventory');
@@ -130,60 +140,89 @@ const Dashboard: React.FC = () => {
         
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 3 }}>
-            {/* Quick Actions */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Quick Actions
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   fullWidth
                   startIcon={<ShoppingCart />}
                   onClick={() => handleQuickAction('create-purchase-order')}
-                  sx={{ justifyContent: 'flex-start' }}
+                  sx={{ 
+                    justifyContent: 'flex-start',
+                    py: 2,
+                    backgroundColor: '#3B82F6',
+                    '&:hover': {
+                      backgroundColor: '#2563EB',
+                    }
+                  }}
                 >
                   Create Purchase Order
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Button
                   variant="outlined"
                   fullWidth
-                  startIcon={<Inventory />}
-                  onClick={() => handleQuickAction('add-new-item')}
-                  sx={{ justifyContent: 'flex-start' }}
+                  startIcon={<People />}
+                  onClick={() => handleQuickAction('add-new-supplier')}
+                  sx={{ 
+                    justifyContent: 'flex-start',
+                    py: 2,
+                    color: '#3B82F6',
+                    borderColor: '#3B82F6',
+                    '&:hover': {
+                      borderColor: '#2563EB',
+                      backgroundColor: 'rgba(59, 130, 246, 0.04)',
+                    }
+                  }}
                 >
-                  Add New Item
+                  Add New Supplier
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Button
                   variant="outlined"
                   fullWidth
-                  startIcon={<Assessment />}
-                  onClick={() => handleQuickAction('generate-report')}
-                  sx={{ justifyContent: 'flex-start' }}
+                  startIcon={<Assignment />}
+                  onClick={() => handleQuickAction('create-requisition')}
+                  sx={{ 
+                    justifyContent: 'flex-start',
+                    py: 2,
+                    color: '#EF4444',
+                    borderColor: '#EF4444',
+                    '&:hover': {
+                      borderColor: '#DC2626',
+                      backgroundColor: 'rgba(239, 68, 68, 0.04)',
+                    }
+                  }}
                 >
-                  Generate Report
+                  Create Requisition
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <Button
                   variant="outlined"
                   fullWidth
-                  startIcon={<Inventory />}
-                  onClick={() => handleQuickAction('view-inventory')}
-                  sx={{ justifyContent: 'flex-start' }}
+                  startIcon={<AttachMoney />}
+                  onClick={() => handleQuickAction('process-payment')}
+                  sx={{ 
+                    justifyContent: 'flex-start',
+                    py: 2,
+                    color: '#10B981',
+                    borderColor: '#10B981',
+                    '&:hover': {
+                      borderColor: '#059669',
+                      backgroundColor: 'rgba(16, 185, 129, 0.04)',
+                    }
+                  }}
                 >
-                  View Inventory
+                  Process Payment
                 </Button>
               </Grid>
             </Grid>
-          </Paper>
-        </Grid>
           </Paper>
         </Grid>
       </Grid>
