@@ -124,4 +124,12 @@ public class QuotationLine extends BaseEntity {
         // Calculate line total with VAT
         lineTotalWithVat = lineTotal.add(vatAmount);
     }
+
+    public BigDecimal getLineTotal() {
+        return lineTotal;
+    }
+
+    public void setLineTotal(BigDecimal lineTotal) {
+        this.lineTotal = lineTotal;
+    }
 }

@@ -376,6 +376,9 @@ public class DataSeederService {
                 BigDecimal unitPrice = product.getUnitPrice();
                 BigDecimal lineTotal = quantity.multiply(unitPrice);
                 
+                BigDecimal deliveredQty = salesOrder.getStatus().toString().contains("DELIVERED") ? 
+                                     quantity : new BigDecimal(random.nextInt(quantity.intValue() + 1));
+                
                 SalesOrderLine line = SalesOrderLine.builder()
                     .salesOrder(salesOrder)
                     .product(product)
@@ -387,9 +390,8 @@ public class DataSeederService {
                     .vatRate(new BigDecimal("0.15"))
                     .vatAmount(lineTotal.multiply(new BigDecimal("0.15")))
                     .unitOfMeasure("PC")
-                    .deliveredQuantity(salesOrder.getStatus().toString().contains("DELIVERED") ? 
-                                     quantity : new BigDecimal(random.nextInt(quantity.intValue() + 1)))
-                    .remainingQuantity(quantity.subtract(line.getDeliveredQuantity()))
+                    .deliveredQuantity(deliveredQty)
+                    .remainingQuantity(quantity.subtract(deliveredQty))
                     .build();
                 
                 salesOrder.getSalesOrderLines().add(line);
@@ -646,8 +648,8 @@ public class DataSeederService {
             .leadTimeDays(random.nextInt(30) + 5)
             .shelfLifeMonths(random.nextInt(24) + 6)
             .warrantyMonths(random.nextInt(12) + 1)
-            .weightKg(new BigDecimal(random.nextInt(50) + 1))
-            .volumeM3(new BigDecimal("0." + String.format("%03d", random.nextInt(1000))))
+            .weight(new BigDecimal(random.nextInt(50) + 1))
+            .volume(new BigDecimal("0." + String.format("%03d", random.nextInt(1000))))
             .build();
     }
 

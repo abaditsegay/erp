@@ -349,4 +349,20 @@ public class StoreRequisitionLine extends BaseEntity {
     public void setLineNumber(Integer lineNumber) {
         this.lineNumber = lineNumber;
     }
+
+    public BigDecimal getQuantityIssued() {
+        return quantityIssued;
+    }
+
+    public void setQuantityIssued(BigDecimal quantityIssued) {
+        this.quantityIssued = quantityIssued;
+    }
+
+    public BigDecimal getQuantityPending() {
+        return quantityPending;
+    }
+
+    public void setQuantityPending(BigDecimal quantityPending) {
+        this.quantityPending = quantityPending;
+    }
 }

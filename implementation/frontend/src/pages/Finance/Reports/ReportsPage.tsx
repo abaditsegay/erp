@@ -22,13 +22,25 @@ import {
   LinearProgress,
   Alert,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Menu,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   Assessment as ReportIcon,
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   AccountBalance as BalanceSheetIcon,
-  Receipt as IncomeIcon,
   MonetizationOn as CashFlowIcon,
   BarChart as BarChartIcon,
   PieChart as PieChartIcon,
@@ -40,7 +52,13 @@ import {
   Business as BusinessIcon,
   AttachMoney as MoneyIcon,
   AccountBalanceWallet as WalletIcon,
-  CreditCard as CardIcon,
+  MoreVert as MoreVertIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Email as EmailIcon,
+  Print as PrintIcon,
+  Share as ShareIcon,
+  Archive as ArchiveIcon,
 } from '@mui/icons-material';
 import {
   BarChart,
@@ -48,7 +66,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   PieChart,
   Pie,
@@ -245,6 +263,13 @@ const ReportsPage: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState<string>('All');
   const [dateRange, setDateRange] = useState<string>('current-month');
   const [isGenerating, setIsGenerating] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [actionMenu, setActionMenu] = useState<{
+    anchorEl: HTMLElement | null;
+    report: FinancialReport | null;
+  }>({ anchorEl: null, report: null });
+  const [selectedReport, setSelectedReport] = useState<FinancialReport | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const filteredReports = reports.filter(report => 
     filterCategory === 'All' || report.category === filterCategory
@@ -263,6 +288,50 @@ const ReportsPage: React.FC = () => {
   const handleScheduleReport = (reportId: string) => {
     // TODO: Open schedule dialog
     console.log(`Schedule report: ${reportId}`);
+  };
+
+  const handleActionMenu = (event: React.MouseEvent<HTMLElement>, report: FinancialReport) => {
+    setActionMenu({ anchorEl: event.currentTarget, report });
+  };
+
+  const closeActionMenu = () => {
+    setActionMenu({ anchorEl: null, report: null });
+  };
+
+  const handleViewReport = (report: FinancialReport) => {
+    setSelectedReport(report);
+    setDialogOpen(true);
+    closeActionMenu();
+  };
+
+  const handleEditReport = (report: FinancialReport) => {
+    console.log(`Edit report: ${report.id}`);
+    closeActionMenu();
+  };
+
+  const handleDeleteReport = (report: FinancialReport) => {
+    console.log(`Delete report: ${report.id}`);
+    closeActionMenu();
+  };
+
+  const handleEmailReport = (report: FinancialReport) => {
+    console.log(`Email report: ${report.id}`);
+    closeActionMenu();
+  };
+
+  const handlePrintReport = (report: FinancialReport) => {
+    console.log(`Print report: ${report.id}`);
+    closeActionMenu();
+  };
+
+  const handleArchiveReport = (report: FinancialReport) => {
+    console.log(`Archive report: ${report.id}`);
+    closeActionMenu();
+  };
+
+  const handleShareReport = (report: FinancialReport) => {
+    console.log(`Share report: ${report.id}`);
+    closeActionMenu();
   };
 
   const getCategoryIcon = (category: string) => {
@@ -305,6 +374,22 @@ const ReportsPage: React.FC = () => {
             የገንዘብ ሪፖርቶች - Generate comprehensive financial reports for your Ethiopian business
           </Typography>
         </Box>
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant={viewMode === 'grid' ? 'contained' : 'outlined'}
+            onClick={() => setViewMode('grid')}
+            startIcon={<BarChartIcon />}
+          >
+            Grid View
+          </Button>
+          <Button
+            variant={viewMode === 'table' ? 'contained' : 'outlined'}
+            onClick={() => setViewMode('table')}
+            startIcon={<ViewIcon />}
+          >
+            Table View
+          </Button>
+        </Stack>
       </Box>
 
       {/* Key Metrics Dashboard */}
@@ -319,7 +404,7 @@ const ReportsPage: React.FC = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis tickFormatter={(value) => `${value/1000}K`} />
-                <Tooltip formatter={(value) => formatCurrency(value as number)} />
+                <RechartsTooltip formatter={(value) => formatCurrency(value as number)} />
                 <Legend />
                 <Area type="monotone" dataKey="revenue" stackId="1" stroke="#8884d8" fill="#8884d8" name="Revenue" />
                 <Area type="monotone" dataKey="expenses" stackId="2" stroke="#82ca9d" fill="#82ca9d" name="Expenses" />
@@ -347,7 +432,7 @@ const ReportsPage: React.FC = () => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => formatCurrency(value as number)} />
+                <RechartsTooltip formatter={(value) => formatCurrency(value as number)} />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
@@ -451,115 +536,220 @@ const ReportsPage: React.FC = () => {
         </Grid>
       </Paper>
 
-      {/* Reports Grid */}
-      <Grid container spacing={3}>
-        {filteredReports.map((report) => (
-          <Grid item xs={12} sm={6} md={4} key={report.id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  {getCategoryIcon(report.category)}
-                  <Box ml={1}>
-                    <Typography variant="h6" component="div">
-                      {report.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {report.nameAmharic}
-                    </Typography>
+      {/* Reports Grid or Table */}
+      {viewMode === 'grid' ? (
+        <Grid container spacing={3}>
+          {filteredReports.map((report) => (
+            <Grid item xs={12} sm={6} md={4} key={report.id}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                    <Box display="flex" alignItems="center">
+                      {getCategoryIcon(report.category)}
+                      <Box ml={1}>
+                        <Typography variant="h6" component="div">
+                          {report.name}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {report.nameAmharic}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Tooltip title="More Actions">
+                      <IconButton size="small" onClick={(e) => handleActionMenu(e, report)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
-                </Box>
 
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  {report.description}
-                </Typography>
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    {report.description}
+                  </Typography>
 
-                <Stack spacing={1} mb={2}>
-                  <Chip
-                    label={report.category}
-                    color={getCategoryColor(report.category) as any}
-                    size="small"
-                  />
-                  <Chip
-                    label={`${report.frequency} Report`}
-                    variant="outlined"
-                    size="small"
-                  />
-                </Stack>
-
-                <Divider sx={{ my: 2 }} />
-
-                <List dense>
-                  <ListItem disablePadding>
-                    <ListItemIcon>
-                      <ScheduleIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Generation Time" 
-                      secondary={report.estimatedTime}
+                  <Stack spacing={1} mb={2}>
+                    <Chip
+                      label={report.category}
+                      color={getCategoryColor(report.category) as any}
+                      size="small"
                     />
-                  </ListItem>
-                  {report.lastGenerated && (
+                    <Chip
+                      label={`${report.frequency} Report`}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Stack>
+
+                  <Divider sx={{ my: 2 }} />
+
+                  <List dense>
                     <ListItem disablePadding>
                       <ListItemIcon>
-                        <DateRangeIcon fontSize="small" />
+                        <ScheduleIcon fontSize="small" />
                       </ListItemIcon>
                       <ListItemText 
-                        primary="Last Generated" 
-                        secondary={format(new Date(report.lastGenerated), 'MMM dd, yyyy HH:mm')}
+                        primary="Generation Time" 
+                        secondary={report.estimatedTime}
                       />
                     </ListItem>
-                  )}
-                  <ListItem disablePadding>
-                    <ListItemIcon>
-                      <DownloadIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary="Export Formats" 
-                      secondary={report.format.join(', ')}
-                    />
-                  </ListItem>
-                </List>
-              </CardContent>
+                    {report.lastGenerated && (
+                      <ListItem disablePadding>
+                        <ListItemIcon>
+                          <DateRangeIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText 
+                          primary="Last Generated" 
+                          secondary={format(new Date(report.lastGenerated), 'MMM dd, yyyy HH:mm')}
+                        />
+                      </ListItem>
+                    )}
+                    <ListItem disablePadding>
+                      <ListItemIcon>
+                        <DownloadIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText 
+                        primary="Export Formats" 
+                        secondary={report.format.join(', ')}
+                      />
+                    </ListItem>
+                  </List>
+                </CardContent>
 
-              <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
-                <Button
-                  variant="contained"
-                  startIcon={isGenerating === report.id ? <LinearProgress /> : <ReportIcon />}
-                  onClick={() => handleGenerateReport(report.id)}
-                  disabled={isGenerating === report.id}
-                  size="small"
-                >
-                  {isGenerating === report.id ? 'Generating...' : 'Generate'}
-                </Button>
-                
-                <Stack direction="row" spacing={1}>
+                <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
                   <Button
-                    variant="outlined"
+                    variant="contained"
+                    startIcon={isGenerating === report.id ? <LinearProgress /> : <ReportIcon />}
+                    onClick={() => handleGenerateReport(report.id)}
+                    disabled={isGenerating === report.id}
                     size="small"
-                    startIcon={<ViewIcon />}
                   >
-                    Preview
+                    {isGenerating === report.id ? 'Generating...' : 'Generate'}
                   </Button>
-                  {report.canSchedule && (
+                  
+                  <Stack direction="row" spacing={1}>
                     <Button
                       variant="outlined"
                       size="small"
-                      startIcon={<ScheduleIcon />}
-                      onClick={() => handleScheduleReport(report.id)}
+                      startIcon={<ViewIcon />}
+                      onClick={() => handleViewReport(report)}
                     >
-                      Schedule
+                      Preview
                     </Button>
-                  )}
-                </Stack>
-              </CardActions>
+                    {report.canSchedule && (
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<ScheduleIcon />}
+                        onClick={() => handleScheduleReport(report.id)}
+                      >
+                        Schedule
+                      </Button>
+                    )}
+                  </Stack>
+                </CardActions>
 
-              {isGenerating === report.id && (
-                <LinearProgress sx={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} />
-              )}
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                {isGenerating === report.id && (
+                  <LinearProgress sx={{ position: 'absolute', bottom: 0, left: 0, right: 0 }} />
+                )}
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Paper>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Report Name</TableCell>
+                  <TableCell>Category</TableCell>
+                  <TableCell>Frequency</TableCell>
+                  <TableCell>Last Generated</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Formats</TableCell>
+                  <TableCell align="right">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredReports.map((report) => (
+                  <TableRow key={report.id} hover>
+                    <TableCell>
+                      <Box display="flex" alignItems="center">
+                        {getCategoryIcon(report.category)}
+                        <Box ml={2}>
+                          <Typography variant="body2" fontWeight="medium">
+                            {report.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {report.nameAmharic}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={report.category}
+                        color={getCategoryColor(report.category) as any}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={report.frequency}
+                        variant="outlined"
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {report.lastGenerated ? (
+                        <Typography variant="body2">
+                          {format(new Date(report.lastGenerated), 'MMM dd, yyyy HH:mm')}
+                        </Typography>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          Never
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={isGenerating === report.id ? 'Generating...' : 'Ready'}
+                        color={isGenerating === report.id ? 'warning' : 'success'}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {report.format.join(', ')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="Generate Report">
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleGenerateReport(report.id)}
+                          disabled={isGenerating === report.id}
+                        >
+                          <ReportIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="View Details">
+                        <IconButton size="small" onClick={() => handleViewReport(report)}>
+                          <ViewIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="More Actions">
+                        <IconButton size="small" onClick={(e) => handleActionMenu(e, report)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      )}
 
       {/* Account Balances Summary */}
       <Paper sx={{ mt: 4, p: 3 }}>
@@ -583,6 +773,154 @@ const ReportsPage: React.FC = () => {
           ))}
         </Grid>
       </Paper>
+
+      {/* Action Menu */}
+      <Menu
+        anchorEl={actionMenu.anchorEl}
+        open={Boolean(actionMenu.anchorEl)}
+        onClose={closeActionMenu}
+      >
+        {actionMenu.report && (
+          <>
+            <MenuItem onClick={() => handleViewReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <ViewIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>View Details</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleGenerateReport(actionMenu.report!.id)}>
+              <ListItemIcon>
+                <ReportIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Generate Report</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleEditReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <EditIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Edit Configuration</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handlePrintReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <PrintIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Print Report</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleEmailReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <EmailIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Email Report</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleShareReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <ShareIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Share Report</ListItemText>
+            </MenuItem>
+            
+            {actionMenu.report.canSchedule && (
+              <MenuItem onClick={() => handleScheduleReport(actionMenu.report!.id)}>
+                <ListItemIcon>
+                  <ScheduleIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Schedule Report</ListItemText>
+              </MenuItem>
+            )}
+            
+            <MenuItem onClick={() => handleArchiveReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <ArchiveIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Archive</ListItemText>
+            </MenuItem>
+            
+            <MenuItem onClick={() => handleDeleteReport(actionMenu.report!)}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
+          </>
+        )}
+      </Menu>
+
+      {/* Report Details Dialog */}
+      <Dialog 
+        open={dialogOpen} 
+        onClose={() => setDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        {selectedReport && (
+          <>
+            <DialogTitle>
+              <Box display="flex" alignItems="center">
+                {getCategoryIcon(selectedReport.category)}
+                <Box ml={2}>
+                  <Typography variant="h6">{selectedReport.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {selectedReport.nameAmharic}
+                  </Typography>
+                </Box>
+              </Box>
+            </DialogTitle>
+            <DialogContent>
+              <Typography variant="body1" paragraph>
+                {selectedReport.description}
+              </Typography>
+              
+              <Grid container spacing={2} mb={2}>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">Category:</Typography>
+                  <Chip
+                    label={selectedReport.category}
+                    color={getCategoryColor(selectedReport.category) as any}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">Frequency:</Typography>
+                  <Typography variant="body2">{selectedReport.frequency}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">Generation Time:</Typography>
+                  <Typography variant="body2">{selectedReport.estimatedTime}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2" color="text.secondary">Export Formats:</Typography>
+                  <Typography variant="body2">{selectedReport.format.join(', ')}</Typography>
+                </Grid>
+              </Grid>
+
+              {selectedReport.lastGenerated && (
+                <Alert severity="info" sx={{ mt: 2 }}>
+                  Last generated: {format(new Date(selectedReport.lastGenerated), 'MMMM dd, yyyy HH:mm')}
+                </Alert>
+              )}
+              
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                Required Permissions: {selectedReport.requiredPermissions.join(', ')}
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setDialogOpen(false)}>Close</Button>
+              <Button 
+                variant="contained" 
+                onClick={() => handleGenerateReport(selectedReport.id)}
+                disabled={isGenerating === selectedReport.id}
+              >
+                {isGenerating === selectedReport.id ? 'Generating...' : 'Generate Report'}
+              </Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
     </Box>
   );
 };

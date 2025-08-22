@@ -33,6 +33,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Fade,
+  Menu,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -50,6 +52,18 @@ import {
   Visibility as ViewIcon,
   FilterList as FilterIcon,
   Download as DownloadIcon,
+  MoreVert as MoreVertIcon,
+  Print as PrintIcon,
+  Email as EmailIcon,
+  Archive as ArchiveIcon,
+  Restore as RestoreIcon,
+  History as HistoryIcon,
+  Description as DescriptionIcon,
+  Close as CloseIcon,
+  CheckCircle as ApprovedIcon,
+  Block as BlockIcon,
+  Lock as LockIcon,
+  LockOpen as UnlockIcon,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
@@ -290,6 +304,16 @@ const AccountsPage: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Action menu state
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPrintDialogOpen, setIsPrintDialogOpen] = useState(false);
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
+  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
   // Calculate summary statistics
   const summary = React.useMemo(() => {
     const totalAssets = accounts
@@ -358,6 +382,302 @@ const AccountsPage: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this account?')) {
       setAccounts(prev => prev.filter(acc => acc.id !== accountId));
     }
+  };
+
+  // Action menu handlers
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, account: Account) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedAccount(account);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    // Don't clear selectedAccount here - let dialogs handle it
+  };
+
+  const handleAction = (action: string) => {
+    if (!selectedAccount) return;
+    
+    switch (action) {
+      case 'view':
+        setIsViewDialogOpen(true);
+        break;
+        
+      case 'edit':
+        setIsEditDialogOpen(true);
+        break;
+        
+      case 'delete':
+        setIsDeleteDialogOpen(true);
+        break;
+        
+      case 'archive':
+        setIsArchiveDialogOpen(true);
+        break;
+        
+      case 'activate':
+        setAccounts(prev => 
+          prev.map(acc => 
+            acc.id === selectedAccount.id 
+              ? { ...acc, isActive: true, updatedAt: new Date().toISOString() }
+              : acc
+          )
+        );
+        setSuccessMessage(`Account ${selectedAccount.code} has been activated successfully!`);
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
+        break;
+        
+      case 'deactivate':
+        setAccounts(prev => 
+          prev.map(acc => 
+            acc.id === selectedAccount.id 
+              ? { ...acc, isActive: false, updatedAt: new Date().toISOString() }
+              : acc
+          )
+        );
+        setSuccessMessage(`Account ${selectedAccount.code} has been deactivated successfully!`);
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
+        break;
+        
+      case 'print':
+        setIsPrintDialogOpen(true);
+        break;
+        
+      case 'email':
+        setIsEmailDialogOpen(true);
+        break;
+        
+      case 'history':
+        // Open transaction history in a new window or navigate
+        handleTransactionHistory();
+        break;
+        
+      case 'duplicate':
+        handleDuplicateAccount();
+        break;
+        
+      case 'freeze':
+        setAccounts(prev => 
+          prev.map(acc => 
+            acc.id === selectedAccount.id 
+              ? { ...acc, isActive: false, updatedAt: new Date().toISOString() }
+              : acc
+          )
+        );
+        setSuccessMessage(`Account ${selectedAccount.code} has been frozen for security!`);
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
+        break;
+        
+      case 'export':
+        handleExportAccount();
+        break;
+        
+      default:
+        console.log(`Unknown action: ${action}`);
+    }
+    
+    handleMenuClose();
+  };
+
+  const handleTransactionHistory = () => {
+    if (!selectedAccount) return;
+    
+    // Create a transaction history report
+    const historyWindow = window.open('', '_blank');
+    if (historyWindow) {
+      historyWindow.document.write(`
+        <html>
+          <head>
+            <title>Transaction History - ${selectedAccount.code}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; }
+              .transaction { margin-bottom: 10px; }
+              .debit { color: #d32f2f; }
+              .credit { color: #2e7d32; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Transaction History Report</h3>
+              <p>Account: ${selectedAccount.code} - ${selectedAccount.name}</p>
+              <p>Generated on: ${format(new Date(), 'MMM dd, yyyy HH:mm')}</p>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Reference</th>
+                  <th>Description</th>
+                  <th>Debit</th>
+                  <th>Credit</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${format(new Date(selectedAccount.lastTransactionDate || new Date()), 'MMM dd, yyyy')}</td>
+                  <td>TXN-001</td>
+                  <td>Opening Balance</td>
+                  <td class="debit">${selectedAccount.balance > 0 ? formatCurrency(selectedAccount.balance, selectedAccount.currency) : '-'}</td>
+                  <td class="credit">${selectedAccount.balance < 0 ? formatCurrency(Math.abs(selectedAccount.balance), selectedAccount.currency) : '-'}</td>
+                  <td>${formatCurrency(selectedAccount.balance, selectedAccount.currency)}</td>
+                </tr>
+                <tr>
+                  <td colspan="6" style="text-align: center; color: #666; font-style: italic;">
+                    ${selectedAccount.transactions} total transactions
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p style="margin-top: 30px; text-align: center; color: #666;">
+              Complete transaction history available in the main system
+            </p>
+          </body>
+        </html>
+      `);
+      historyWindow.document.close();
+    }
+  };
+
+  const handleDuplicateAccount = () => {
+    if (!selectedAccount) return;
+    
+    const newAccountCode = prompt('Enter new account code for duplicate:', `${selectedAccount.code}-COPY`);
+    if (newAccountCode && newAccountCode !== selectedAccount.code) {
+      const duplicateAccount: Account = {
+        ...selectedAccount,
+        id: Date.now().toString(),
+        code: newAccountCode,
+        name: `${selectedAccount.name} (Copy)`,
+        balance: 0, // Start with zero balance
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        transactions: 0,
+        lastTransactionDate: undefined
+      };
+      
+      setAccounts(prev => [...prev, duplicateAccount]);
+      setSuccessMessage(`Account duplicated as ${newAccountCode}!`);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    }
+  };
+
+  const handleExportAccount = () => {
+    if (!selectedAccount) return;
+    
+    const csvContent = [
+      ['Field', 'Value'],
+      ['Account Code', selectedAccount.code],
+      ['Account Name', selectedAccount.name],
+      ['Account Name (Amharic)', selectedAccount.nameAmharic || ''],
+      ['Type', selectedAccount.type],
+      ['Category', selectedAccount.category],
+      ['Balance', selectedAccount.balance.toString()],
+      ['Currency', selectedAccount.currency],
+      ['Status', selectedAccount.isActive ? 'Active' : 'Inactive'],
+      ['Transactions', selectedAccount.transactions.toString()],
+      ['Last Transaction', selectedAccount.lastTransactionDate || 'None'],
+      ['Created', selectedAccount.createdAt],
+      ['Updated', selectedAccount.updatedAt],
+      ['Description', selectedAccount.description || '']
+    ].map(row => row.join(',')).join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `account-${selectedAccount.code}-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    setSuccessMessage(`Account data exported successfully!`);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!selectedAccount) return;
+    
+    setAccounts(prev => prev.filter(acc => acc.id !== selectedAccount.id));
+    setSuccessMessage(`Account ${selectedAccount.code} has been deleted successfully!`);
+    setIsDeleteDialogOpen(false);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleArchiveConfirm = () => {
+    if (!selectedAccount) return;
+    
+    setAccounts(prev => 
+      prev.map(acc => 
+        acc.id === selectedAccount.id 
+          ? { ...acc, isActive: false }
+          : acc
+      )
+    );
+    setSuccessMessage(`Account ${selectedAccount.code} has been archived successfully!`);
+    setIsArchiveDialogOpen(false);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handlePrint = () => {
+    if (!selectedAccount) return;
+    
+    // Create a printable version
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Account Details - ${selectedAccount.code}</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 20px; }
+              .account-info { margin-bottom: 20px; }
+              .account-info th, .account-info td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              .account-info th { background-color: #f2f2f2; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>Ethiopian ERP System</h2>
+              <h3>Chart of Accounts Report</h3>
+              <p>Account Code: ${selectedAccount.code}</p>
+            </div>
+            <table class="account-info" style="width: 100%;">
+              <tr><th>Account Code</th><td>${selectedAccount.code}</td></tr>
+              <tr><th>Account Name</th><td>${selectedAccount.name}</td></tr>
+              <tr><th>Account Type</th><td>${selectedAccount.type}</td></tr>
+              <tr><th>Category</th><td>${selectedAccount.category}</td></tr>
+              <tr><th>Balance</th><td>${formatCurrency(selectedAccount.balance, selectedAccount.currency)}</td></tr>
+              <tr><th>Status</th><td>${selectedAccount.isActive ? 'Active' : 'Inactive'}</td></tr>
+              <tr><th>Transactions</th><td>${selectedAccount.transactions}</td></tr>
+              <tr><th>Last Transaction</th><td>${selectedAccount.lastTransactionDate || 'N/A'}</td></tr>
+              <tr><th>Created</th><td>${format(new Date(selectedAccount.createdAt), 'MMM dd, yyyy')}</td></tr>
+            </table>
+            <p style="margin-top: 30px; text-align: center; color: #666;">
+              Generated on ${format(new Date(), 'MMM dd, yyyy HH:mm')}
+            </p>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+    
+    setIsPrintDialogOpen(false);
   };
 
   const formatCurrency = (amount: number, currency: 'ETB' | 'USD') => {
@@ -644,29 +964,12 @@ const AccountsPage: React.FC = () => {
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <Tooltip title="View Details">
-                      <IconButton size="small" color="primary">
-                        <ViewIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Edit Account">
-                      <IconButton 
-                        size="small" 
-                        color="primary"
-                        onClick={() => handleEditAccount(account)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete Account">
-                      <IconButton 
-                        size="small" 
-                        color="error"
-                        onClick={() => handleDeleteAccount(account.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
+                    <IconButton
+                      onClick={(e) => handleMenuClick(e, account)}
+                      size="small"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -715,6 +1018,560 @@ const AccountsPage: React.FC = () => {
           </Typography>
         </Box>
       </Paper>
+
+      {/* Success Alert */}
+      <Fade in={showSuccess}>
+        <Alert severity="success" sx={{ mt: 2 }}>
+          {successMessage || 'Operation completed successfully!'}
+        </Alert>
+      </Fade>
+
+      {/* Action Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={() => handleAction('view')}>
+          <ViewIcon sx={{ mr: 1 }} />
+          View Details
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('edit')}>
+          <EditIcon sx={{ mr: 1 }} />
+          Edit Account
+        </MenuItem>
+        {selectedAccount?.isActive ? (
+          <MenuItem onClick={() => handleAction('deactivate')}>
+            <BlockIcon sx={{ mr: 1 }} />
+            Deactivate
+          </MenuItem>
+        ) : (
+          <MenuItem onClick={() => handleAction('activate')}>
+            <ApprovedIcon sx={{ mr: 1 }} />
+            Activate
+          </MenuItem>
+        )}
+        <Divider />
+        <MenuItem onClick={() => handleAction('history')}>
+          <HistoryIcon sx={{ mr: 1 }} />
+          Transaction History
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('duplicate')}>
+          <DescriptionIcon sx={{ mr: 1 }} />
+          Duplicate Account
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('freeze')}>
+          <LockIcon sx={{ mr: 1 }} />
+          Freeze Account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => handleAction('print')}>
+          <PrintIcon sx={{ mr: 1 }} />
+          Print Details
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('email')}>
+          <EmailIcon sx={{ mr: 1 }} />
+          Send Report
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('export')}>
+          <DownloadIcon sx={{ mr: 1 }} />
+          Export Data
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={() => handleAction('archive')}>
+          <ArchiveIcon sx={{ mr: 1 }} />
+          Archive Account
+        </MenuItem>
+        <MenuItem onClick={() => handleAction('delete')} sx={{ color: 'error.main' }}>
+          <DeleteIcon sx={{ mr: 1 }} />
+          Delete Account
+        </MenuItem>
+      </Menu>
+
+      {/* View Account Dialog */}
+      <Dialog open={isViewDialogOpen} onClose={() => {
+        setIsViewDialogOpen(false);
+        setSelectedAccount(null);
+      }} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6">Account Details</Typography>
+            <IconButton onClick={() => {
+              setIsViewDialogOpen(false);
+              setSelectedAccount(null);
+            }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          {selectedAccount && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Account Code</Typography>
+                  <Typography variant="h6">{selectedAccount.code}</Typography>
+                </Box>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Account Name</Typography>
+                  <Typography variant="body1">{selectedAccount.name}</Typography>
+                  {selectedAccount.nameAmharic && (
+                    <Typography variant="body2" color="text.secondary">{selectedAccount.nameAmharic}</Typography>
+                  )}
+                </Box>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Type</Typography>
+                  <Chip
+                    label={selectedAccount.type}
+                    color={getAccountTypeColor(selectedAccount.type) as any}
+                    size="small"
+                  />
+                </Box>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Category</Typography>
+                  <Typography variant="body1">{selectedAccount.category}</Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Current Balance</Typography>
+                  <Typography 
+                    variant="h5" 
+                    color={selectedAccount.balance >= 0 ? 'success.main' : 'error.main'}
+                  >
+                    {formatCurrency(selectedAccount.balance, selectedAccount.currency)}
+                  </Typography>
+                </Box>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Status</Typography>
+                  <Chip
+                    label={selectedAccount.isActive ? 'Active' : 'Inactive'}
+                    color={selectedAccount.isActive ? 'success' : 'default'}
+                    size="small"
+                  />
+                </Box>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Total Transactions</Typography>
+                  <Typography variant="body1">{selectedAccount.transactions}</Typography>
+                </Box>
+                <Box mb={2}>
+                  <Typography variant="subtitle2" color="text.secondary">Last Transaction</Typography>
+                  <Typography variant="body1">
+                    {selectedAccount.lastTransactionDate 
+                      ? format(new Date(selectedAccount.lastTransactionDate), 'MMM dd, yyyy')
+                      : 'No transactions'
+                    }
+                  </Typography>
+                </Box>
+              </Grid>
+              {selectedAccount.description && (
+                <Grid item xs={12}>
+                  <Box mb={2}>
+                    <Typography variant="subtitle2" color="text.secondary">Description</Typography>
+                    <Typography variant="body1">{selectedAccount.description}</Typography>
+                  </Box>
+                </Grid>
+              )}
+            </Grid>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Account Dialog */}
+      <Dialog open={isEditDialogOpen} onClose={() => {
+        setIsEditDialogOpen(false);
+        setSelectedAccount(null);
+      }} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6">Edit Account</Typography>
+            <IconButton onClick={() => setIsEditDialogOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          {selectedAccount && (
+            <Box component="form" sx={{ mt: 2 }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Account Code"
+                    defaultValue={selectedAccount.code}
+                    variant="outlined"
+                    disabled
+                    helperText="Account code cannot be changed"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Account Type</InputLabel>
+                    <Select
+                      defaultValue={selectedAccount.type}
+                      label="Account Type"
+                      disabled
+                    >
+                      <MenuItem value="Asset">Asset</MenuItem>
+                      <MenuItem value="Liability">Liability</MenuItem>
+                      <MenuItem value="Equity">Equity</MenuItem>
+                      <MenuItem value="Revenue">Revenue</MenuItem>
+                      <MenuItem value="Expense">Expense</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Account Name (English)"
+                    defaultValue={selectedAccount.name}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Account Name (Amharic)"
+                    defaultValue={selectedAccount.nameAmharic || ''}
+                    variant="outlined"
+                    placeholder="የሂሳብ ስም"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                      defaultValue={selectedAccount.category}
+                      label="Category"
+                    >
+                      {selectedAccount.type && ACCOUNT_CATEGORIES[selectedAccount.type as keyof typeof ACCOUNT_CATEGORIES]?.map(category => (
+                        <MenuItem key={category} value={category}>{category}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Currency</InputLabel>
+                    <Select
+                      defaultValue={selectedAccount.currency}
+                      label="Currency"
+                    >
+                      <MenuItem value="ETB">Ethiopian Birr (ETB)</MenuItem>
+                      <MenuItem value="USD">US Dollar (USD)</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Current Balance"
+                    type="number"
+                    defaultValue={selectedAccount.balance}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">{selectedAccount.currency}</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      defaultValue={selectedAccount.isActive ? 'true' : 'false'}
+                      label="Status"
+                    >
+                      <MenuItem value="true">Active</MenuItem>
+                      <MenuItem value="false">Inactive</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Description"
+                    multiline
+                    rows={3}
+                    defaultValue={selectedAccount.description || ''}
+                    placeholder="Account description and notes..."
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={() => {
+              setIsEditDialogOpen(false);
+              setSuccessMessage(`Account ${selectedAccount?.code} has been updated successfully!`);
+              setShowSuccess(true);
+              setTimeout(() => setShowSuccess(false), 3000);
+            }} 
+            color="primary" 
+            variant="contained"
+          >
+            Update Account
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Create Account Dialog */}
+      <Dialog open={isCreateDialogOpen} onClose={() => setIsCreateDialogOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6">Create New Account</Typography>
+            <IconButton onClick={() => setIsCreateDialogOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box component="form" sx={{ mt: 2 }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Account Code"
+                  variant="outlined"
+                  placeholder="e.g., 1100"
+                  helperText="Unique account code following Ethiopian chart of accounts"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Account Type</InputLabel>
+                  <Select
+                    label="Account Type"
+                  >
+                    <MenuItem value="Asset">Asset - ንብረት</MenuItem>
+                    <MenuItem value="Liability">Liability - ዕዳ</MenuItem>
+                    <MenuItem value="Equity">Equity - ካፒታል</MenuItem>
+                    <MenuItem value="Revenue">Revenue - ገቢ</MenuItem>
+                    <MenuItem value="Expense">Expense - ወጪ</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Account Name (English)"
+                  variant="outlined"
+                  placeholder="e.g., Cash on Hand"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Account Name (Amharic)"
+                  variant="outlined"
+                  placeholder="e.g., በእጅ ያለ ገንዘብ"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    label="Category"
+                  >
+                    <MenuItem value="">Select account type first</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Currency</InputLabel>
+                  <Select
+                    defaultValue="ETB"
+                    label="Currency"
+                  >
+                    <MenuItem value="ETB">Ethiopian Birr (ETB)</MenuItem>
+                    <MenuItem value="USD">US Dollar (USD)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Opening Balance"
+                  type="number"
+                  defaultValue={0}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">ETB</InputAdornment>,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    defaultValue="true"
+                    label="Status"
+                  >
+                    <MenuItem value="true">Active</MenuItem>
+                    <MenuItem value="false">Inactive</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Description"
+                  multiline
+                  rows={3}
+                  placeholder="Account description and notes..."
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsCreateDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={() => {
+              setIsCreateDialogOpen(false);
+              setSuccessMessage('New account has been created successfully!');
+              setShowSuccess(true);
+              setTimeout(() => setShowSuccess(false), 3000);
+            }} 
+            color="primary" 
+            variant="contained"
+          >
+            Create Account
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onClose={() => {
+        setIsDeleteDialogOpen(false);
+        setSelectedAccount(null);
+      }}>
+        <DialogTitle>Confirm Account Deletion</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete account <strong>{selectedAccount?.code} - {selectedAccount?.name}</strong>?
+          </Typography>
+          <Typography variant="body2" color="error.main" sx={{ mt: 2 }}>
+            This action cannot be undone and will remove all transaction history.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Delete Account
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Archive Confirmation Dialog */}
+      <Dialog open={isArchiveDialogOpen} onClose={() => setIsArchiveDialogOpen(false)}>
+        <DialogTitle>Archive Account</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to archive account <strong>{selectedAccount?.code} - {selectedAccount?.name}</strong>?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Archived accounts will be deactivated but transaction history will be preserved.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsArchiveDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleArchiveConfirm} color="warning" variant="contained">
+            Archive Account
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Print Dialog */}
+      <Dialog open={isPrintDialogOpen} onClose={() => {
+        setIsPrintDialogOpen(false);
+        setSelectedAccount(null);
+      }}>
+        <DialogTitle>Print Account Details</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Print detailed report for account <strong>{selectedAccount?.code} - {selectedAccount?.name}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsPrintDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handlePrint} color="primary" variant="contained">
+            Print Report
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Email Dialog */}
+      <Dialog open={isEmailDialogOpen} onClose={() => {
+        setIsEmailDialogOpen(false);
+        setSelectedAccount(null);
+      }} maxWidth="sm" fullWidth>
+        <DialogTitle>Send Account Report</DialogTitle>
+        <DialogContent>
+          <Typography gutterBottom>
+            Send account report for <strong>{selectedAccount?.code} - {selectedAccount?.name}</strong>
+          </Typography>
+          <TextField
+            fullWidth
+            label="Email Address"
+            type="email"
+            margin="normal"
+            placeholder="Enter recipient email"
+            defaultValue="finance@company.et"
+          />
+          <TextField
+            fullWidth
+            label="Subject"
+            margin="normal"
+            defaultValue={`Account Report - ${selectedAccount?.code} - ${selectedAccount?.name}`}
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Report Type</InputLabel>
+            <Select defaultValue="summary" label="Report Type">
+              <MenuItem value="summary">Account Summary</MenuItem>
+              <MenuItem value="detailed">Detailed Account Report</MenuItem>
+              <MenuItem value="transactions">Transaction History</MenuItem>
+              <MenuItem value="balance">Balance Sheet Format</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label="Message"
+            multiline
+            rows={3}
+            margin="normal"
+            placeholder="Add a message (optional)"
+            defaultValue={`Please find attached the account report for ${selectedAccount?.code} - ${selectedAccount?.name}.\n\nCurrent Balance: ${selectedAccount ? formatCurrency(selectedAccount.balance, selectedAccount.currency) : ''}\nStatus: ${selectedAccount?.isActive ? 'Active' : 'Inactive'}\n\nBest regards,\nFinance Department`}
+          />
+          <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+            <Typography variant="subtitle2" gutterBottom>Report will include:</Typography>
+            <Typography variant="body2" component="ul" sx={{ m: 0, pl: 2 }}>
+              <li>Account details and current balance</li>
+              <li>Account type and category information</li>
+              <li>Transaction summary for the current month</li>
+              <li>Account status and last activity</li>
+              {selectedAccount?.description && <li>Account description and notes</li>}
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsEmailDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={() => {
+              setIsEmailDialogOpen(false);
+              setSuccessMessage('Account report sent successfully! The recipient will receive it shortly.');
+              setShowSuccess(true);
+              setTimeout(() => setShowSuccess(false), 3000);
+            }} 
+            color="primary" 
+            variant="contained"
+            startIcon={<EmailIcon />}
+          >
+            Send Report
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
