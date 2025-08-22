@@ -1,0 +1,436 @@
+# ============================================
+# ERP Project .gitignore
+# Ethiopian ERP System - Comprehensive exclusions
+# ============================================
+
+# ============================================
+# OPERATING SYSTEM FILES
+# ============================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# JAVA / SPRING BOOT BACKEND
+# ============================================
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+backend.log
+logs/
+*.out
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
+# Spring Boot
+*.pid
+*.seed
+*.pid.lock
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# IDE - Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# IDE - NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# IDE - VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# ============================================
+# NODE.JS / REACT FRONTEND
+# ============================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript v1 declaration files
+typings/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Vuepress build output
+.vuepress/dist
+
+# Docusaurus cache and build outputs
+.docusaurus
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Webpack
+.webpack/
+
+# Create React App
+/build
+
+# ============================================
+# DATABASE FILES
+# ============================================
+
+# H2 Database
+*.h2.db
+*.trace.db
+*.lock.db
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# Database dumps
+*.sql
+*.dump
+
+# ============================================
+# APPLICATION SPECIFIC
+# ============================================
+
+# Configuration files with sensitive data
+application-local.properties
+application-dev.properties
+application-prod.properties
+config/application-local.yml
+config/application-dev.yml
+config/application-prod.yml
+
+# Security keys and certificates
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.truststore
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Kubernetes
+*.kubeconfig
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# ============================================
+# DOCUMENTATION & MEDIA
+# ============================================
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.mkv
+
+# Audio files
+*.mp3
+*.wav
+*.flac
+*.aac
+
+# Large image files
+*.psd
+*.ai
+*.eps
+*.raw
+
+# ============================================
+# DEVELOPMENT & BUILD TOOLS
+# ============================================
+
+# SonarQube
+.sonar/
+.scannerwork/
+
+# JProfiler
+*.jprofiler
+
+# JRebel
+rebel.xml
+
+# Backup files
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+temp/
+
+# Test output
+test-output/
+test-results/
+coverage-reports/
+
+# ============================================
+# CLOUD & DEPLOYMENT
+# ============================================
+
+# AWS
+.aws/
+*.pem
+
+# Azure
+.azure/
+
+# Google Cloud
+.gcloud/
+
+# Heroku
+.heroku/
+
+# ============================================
+# MONITORING & METRICS
+# ============================================
+
+# Application Performance Monitoring
+newrelic.yml
+elastic-apm-agent.jar
+
+# Metrics and monitoring
+*.hprof
+*.dump
+
+# ============================================
+# ETHIOPIAN ERP SPECIFIC
+# ============================================
+
+# Ethiopian Business Data (if contains sensitive info)
+/data/ethiopian-business-data/sensitive/
+/data/customer-data/
+/data/financial-records/
+
+# Reports and exports
+/reports/generated/
+/exports/
+*.xlsx
+*.csv
+*.pdf
+
+# Cache directories
+/cache/
+.cache/
+
+# Uploaded files
+/uploads/
+/attachments/
+
+# ============================================
+# CUSTOM PROJECT EXCLUSIONS
+# ============================================
+
+# Add any project-specific files here
+# Example:
+# custom-config.json
+# local-settings.ini
+
+# End of .gitignore
