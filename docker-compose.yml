@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  database:
+    image: mysql:8.0
+    container_name: erp-database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: erp_system
+      MYSQL_USER: erp_user
+      MYSQL_PASSWORD: erp_password
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./implementation/database/mysql_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./implementation/database/02_stored_procedures.sql:/docker-entrypoint-initdb.d/02-procedures.sql
+    networks:
+      - erp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./implementation/backend
+      dockerfile: Dockerfile
+    container_name: erp-backend
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=mysql
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/erp_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=erp_user
+      - SPRING_DATASOURCE_PASSWORD=erp_password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=false
+      - APP_JWT_SECRET=mySecretKeyForProductionUseAStrongerSecret
+      - APP_JWT_EXPIRATION=86400000
+      - LOGGING_LEVEL_COM_ERP=INFO
+    ports:
+      - "8081:8081"
+    networks:
+      - erp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - backend_logs:/app/logs
+
+  # React Frontend with Nginx
+  frontend:
+    build:
+      context: ./implementation/frontend
+      dockerfile: Dockerfile
+    container_name: erp-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - REACT_APP_API_URL=http://localhost:8081/api
+      - REACT_APP_ENVIRONMENT=production
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - erp-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # Redis Cache (Optional - for future use)
+  redis:
+    image: redis:7-alpine
+    container_name: erp-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - erp-network
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # Nginx Load Balancer (Optional - for scaling)
+  loadbalancer:
+    image: nginx:alpine
+    container_name: erp-loadbalancer
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx-lb.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - erp-network
+    profiles:
+      - loadbalancer
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_logs:
+    driver: local
+
+networks:
+  erp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

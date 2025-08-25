@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Payment Due</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #d32f2f, #f44336); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .payment-due { background: #ffebee; border-left: 4px solid #d32f2f; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .amount { font-size: 20px; font-weight: bold; color: #d32f2f; }
+        .bank-details { background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .button { display: inline-block; background: #d32f2f; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 የክፍያ ማስታወሻ / Payment Due Notice</h1>
+            <p>Ethiopian Financial Management System</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{vendorName}} ተወካይ,</h2>
+            
+            <div class="payment-due">
+                <h3>⏰ የክፍያ ጊዜ ሩቋል / Payment Due</h3>
+                <p>የሚከተለው ክፍያ በ {{dueDate}} ተፈጽሞ መሆን አለበት።</p>
+                <p>The following payment is due on {{dueDate}}.</p>
+            </div>
+            
+            <table class="details-table">
+                <tr>
+                    <th>የሂሳብ ቁጥር / Invoice Number:</th>
+                    <td><strong>{{invoiceNumber}}</strong></td>
+                </tr>
+                <tr>
+                    <th>የሂሳብ ቀን / Invoice Date:</th>
+                    <td>{{invoiceDate}}</td>
+                </tr>
+                <tr>
+                    <th>የመክፈያ ቀን / Due Date:</th>
+                    <td><strong>{{dueDate}}</strong></td>
+                </tr>
+                <tr>
+                    <th>የመክፈያ ሁኔታ / Payment Terms:</th>
+                    <td>{{paymentTerms}}</td>
+                </tr>
+                <tr>
+                    <th>ሊከፈል የሚገባ መጠን / Amount Due:</th>
+                    <td class="amount">{{amountDue}} ብር (ETB)</td>
+                </tr>
+            </table>
+            
+            <h3>የክፍያ ዝርዝር / Payment Breakdown:</h3>
+            <table class="details-table">
+                <tr>
+                    <th>ንዑስ ድምር / Subtotal:</th>
+                    <td>{{subtotal}} ብር</td>
+                </tr>
+                <tr>
+                    <th>ተደማሪ ዋጋ ታክስ (VAT) 15%:</th>
+                    <td>{{vatAmount}} ብር</td>
+                </tr>
+                <tr>
+                    <th>አጠቃላይ / Total:</th>
+                    <td class="amount">{{totalAmount}} ብር</td>
+                </tr>
+            </table>
+            
+            <div class="bank-details">
+                <h3>🏦 የባንክ ዝርዝር / Bank Details:</h3>
+                <p><strong>ባንክ ስም / Bank Name:</strong> {{bankName}}<br>
+                <strong>ሂሳብ ቁጥር / Account Number:</strong> {{accountNumber}}<br>
+                <strong>ሂሳብ ስም / Account Name:</strong> {{accountName}}<br>
+                <strong>SWIFT Code:</strong> {{swiftCode}}<br>
+                <strong>የክፍያ ማመሳከሪያ / Payment Reference:</strong> {{invoiceNumber}}</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{paymentUrl}}" class="button">💳 የመስመር ላይ ክፍያ / Pay Online</a>
+                <a href="{{downloadUrl}}" class="button" style="background: #1976d2;">📄 ሂሳብ ማውረድ / Download Invoice</a>
+            </div>
+            
+            <p><strong>ማስታወሻ / Important Notes:</strong></p>
+            <ul>
+                <li>ክፍያው ከ{{dueDate}} በኋላ ዘግይቶ ከተከፈለ 2% ቀን አቻ ጭማሪ ይኖራል።</li>
+                <li>Late payment fee of 2% per day applies after {{dueDate}}.</li>
+                <li>ስለ ክፍያ ጉዳይ ለማናገር: finance@company.et ወይም +251-11-XXX-XXXX ይደውሉ።</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System</p>
+            <p>አድራሻ: ሜክሲኮ አደባባይ፣ አዲስ አበባ፣ ኢትዮጵያ | ፖ.ሳ.ቁ: 1234</p>
+        </div>
+    </div>
+</body>
+</html>

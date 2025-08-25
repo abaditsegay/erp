@@ -32,7 +32,6 @@ import {
   Autocomplete,
   Alert,
   Fade,
-  Divider,
   List,
   ListItem,
   ListItemText,
@@ -158,6 +157,45 @@ const mockOrders: SalesOrder[] = [
     region: 'Oromia',
     items: 3,
     salesRep: 'ሐና ምርጫ (Hana Mircha)'
+  },
+  {
+    id: 3,
+    orderNumber: 'SO-2024-000003',
+    customer: 'ሲዳማ ካፌ ኤክስፖርት (Sidama Coffee Export)',
+    orderDate: '2024-01-18',
+    deliveryDate: '2024-02-05',
+    status: 'Draft',
+    priority: 'High',
+    totalAmount: 245000,
+    region: 'SNNPR',
+    items: 8,
+    salesRep: 'መስፍን ገብረማርያም (Mesfin Gebremariam)'
+  },
+  {
+    id: 4,
+    orderNumber: 'SO-2024-000004',
+    customer: 'አማራ ግብርና ማህበር (Amhara Agriculture Association)',
+    orderDate: '2024-01-20',
+    deliveryDate: '2024-02-10',
+    status: 'Delivered',
+    priority: 'Normal',
+    totalAmount: 165000,
+    region: 'Amhara',
+    items: 6,
+    salesRep: 'ቀሳነት አህመድ (Qesanet Ahmed)'
+  },
+  {
+    id: 5,
+    orderNumber: 'SO-2024-000005',
+    customer: 'ትግራይ ኢንዱስትሪ ዞን (Tigray Industrial Zone)',
+    orderDate: '2024-01-22',
+    deliveryDate: '2024-02-15',
+    status: 'Invoiced',
+    priority: 'Urgent',
+    totalAmount: 320000,
+    region: 'Tigray',
+    items: 12,
+    salesRep: 'ሳሙኤል ሃይሌ (Samuel Haile)'
   }
 ];
 
@@ -183,6 +221,50 @@ const mockQuotations: Quotation[] = [
     totalAmount: 156000,
     items: 4,
     preparedBy: 'መስከረም ታደሰ (Meskerem Tadesse)'
+  },
+  {
+    id: 3,
+    quotationNumber: 'QT-2024-000003',
+    customer: 'የደቡብ ክልል ካፌ ውህደት (Southern Region Coffee Union)',
+    quotationDate: '2024-01-21',
+    validUntil: '2024-02-21',
+    status: 'Accepted',
+    totalAmount: 380000,
+    items: 15,
+    preparedBy: 'ፍሬሐይወት ገሥ (Frehiwot Gesse)'
+  },
+  {
+    id: 4,
+    quotationNumber: 'QT-2024-000004',
+    customer: 'ድሬዳዋ ድስትሪብዩሽን ሴንተር (Dire Dawa Distribution Center)',
+    quotationDate: '2024-01-23',
+    validUntil: '2024-02-23',
+    status: 'Rejected',
+    totalAmount: 95000,
+    items: 3,
+    preparedBy: 'አህመድ አብዱላሂ (Ahmed Abdullahi)'
+  },
+  {
+    id: 5,
+    quotationNumber: 'QT-2024-000005',
+    customer: 'የገምቤላ ንግድ ማ/ድ (Gambella Trade Organization)',
+    quotationDate: '2024-01-24',
+    validUntil: '2024-02-24',
+    status: 'Expired',
+    totalAmount: 175000,
+    items: 7,
+    preparedBy: 'በላይ መንግስቱ (Belay Mengistu)'
+  },
+  {
+    id: 6,
+    quotationNumber: 'QT-2024-000006',
+    customer: 'አፋር ክልል ንግድ ማህበር (Afar Regional Trade Association)',
+    quotationDate: '2024-01-25',
+    validUntil: '2024-02-25',
+    status: 'Converted',
+    totalAmount: 290000,
+    items: 11,
+    preparedBy: 'ሩብ አሊ (Ruben Ali)'
   }
 ];
 
@@ -203,6 +285,60 @@ const mockCustomers: Customer[] = [
     region: 'Oromia',
     phone: '+251921234567',
     email: 'contact@oromiacoffee.com',
+    type: 'Business'
+  },
+  {
+    id: 3,
+    code: 'CUST-003',
+    name: 'ሲዳማ ካፌ ኤክስፖርት (Sidama Coffee Export)',
+    region: 'SNNPR',
+    phone: '+251931345678',
+    email: 'export@sidamacoffee.et',
+    type: 'Business'
+  },
+  {
+    id: 4,
+    code: 'CUST-004',
+    name: 'አማራ ግብርና ማህበር (Amhara Agriculture Association)',
+    region: 'Amhara',
+    phone: '+251941456789',
+    email: 'info@amaragriculture.gov.et',
+    type: 'Government'
+  },
+  {
+    id: 5,
+    code: 'CUST-005',
+    name: 'ሚኒስትሪ ኦፍ ኤግሪክልቸር (Ministry of Agriculture)',
+    region: 'Addis Ababa',
+    phone: '+251951567890',
+    email: 'ministry@agriculture.gov.et',
+    type: 'Government'
+  },
+  {
+    id: 6,
+    code: 'CUST-006',
+    name: 'Hawassa Industrial Park',
+    region: 'SNNPR',
+    phone: '+251961678901',
+    email: 'info@hawassapark.com',
+    type: 'Business'
+  },
+  {
+    id: 7,
+    code: 'CUST-007',
+    name: 'ትግራይ ኢንዱስትሪ ዞን (Tigray Industrial Zone)',
+    region: 'Tigray',
+    phone: '+251971789012',
+    email: 'contact@tigrayindustry.et',
+    type: 'Business'
+  },
+  {
+    id: 8,
+    code: 'CUST-008',
+    name: 'ድሬዳዋ ድስትሪብዩሽን ሴንተር (Dire Dawa Distribution Center)',
+    region: 'Dire Dawa',
+    phone: '+251981890123',
+    email: 'distribution@diredawa.et',
     type: 'Business'
   }
 ];
@@ -258,7 +394,7 @@ const Sales: React.FC = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedItem(null);
+    // Don't clear selectedItem immediately - let it be cleared when dialogs close
   };
 
   const handleAction = (action: string) => {
@@ -337,6 +473,44 @@ const Sales: React.FC = () => {
     }
     
     handleMenuClose();
+  };
+
+  const handleEdit = (editData: any) => {
+    if (!selectedItem) return;
+    
+    if (selectedItem.orderNumber) {
+      // Update order
+      setOrders(orders.map(order => 
+        order.id === selectedItem.id 
+          ? { 
+              ...order, 
+              deliveryDate: editData.deliveryDate,
+              priority: editData.priority,
+              region: editData.region,
+              salesRep: editData.salesRep,
+              notes: editData.notes
+            }
+          : order
+      ));
+      setSuccessMessage(`Order ${selectedItem.orderNumber} has been updated successfully!`);
+    } else if (selectedItem.quotationNumber) {
+      // Update quotation
+      setQuotations(quotations.map(quote => 
+        quote.id === selectedItem.id 
+          ? { 
+              ...quote, 
+              validUntil: editData.validUntil,
+              preparedBy: editData.preparedBy,
+              notes: editData.notes
+            }
+          : quote
+      ));
+      setSuccessMessage(`Quotation ${selectedItem.quotationNumber} has been updated successfully!`);
+    }
+    
+    setIsEditDialogOpen(false);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
   };
 
   const handleDelete = () => {
@@ -1075,147 +1249,249 @@ const Sales: React.FC = () => {
       </Dialog>
 
       {/* View Details Dialog */}
-      <Dialog open={isViewDialogOpen} onClose={() => setIsViewDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
+      <Dialog open={isViewDialogOpen} onClose={() => { setIsViewDialogOpen(false); setSelectedItem(null); }} maxWidth="lg" fullWidth>
+        <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white', display: 'flex', alignItems: 'center' }}>
+          <Avatar sx={{ bgcolor: 'white', color: 'primary.main', mr: 2 }}>
+            {selectedItem?.orderNumber ? <OrderIcon /> : <QuoteIcon />}
+          </Avatar>
           {selectedItem?.orderNumber ? 'Sales Order Details' : 'Quotation Details'}
         </DialogTitle>
         <DialogContent>
           {selectedItem && (
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <List>
-                  <ListItem>
-                    <ListItemIcon>
-                      <Avatar sx={{ bgcolor: 'primary.main' }}>
-                        {selectedItem.orderNumber ? 'SO' : 'QT'}
-                      </Avatar>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={selectedItem.orderNumber || selectedItem.quotationNumber}
-                      secondary="Document Number"
+            <Box sx={{ mt: 2 }}>
+              {/* Document Header */}
+              <Paper sx={{ p: 3, mb: 3, bgcolor: 'grey.50' }}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={12} md={8}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+                      {selectedItem.orderNumber || selectedItem.quotationNumber}
+                    </Typography>
+                    <Typography variant="h6" color="text.secondary">
+                      {selectedItem.customer}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={4} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+                    <Chip
+                      label={selectedItem.status}
+                      color={getStatusColor(selectedItem.status) as any}
+                      size="medium"
+                      sx={{ fontSize: '1.1rem', fontWeight: 'bold', mb: 1, py: 1, px: 2 }}
                     />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText
-                      primary={selectedItem.customer}
-                      secondary="Customer"
-                    />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText
-                      primary={selectedItem.orderNumber ? selectedItem.orderDate : selectedItem.quotationDate}
-                      secondary={selectedItem.orderNumber ? 'Order Date' : 'Quotation Date'}
-                    />
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <List>
-                  <ListItem>
-                    <ListItemText
-                      primary={`${selectedItem.totalAmount.toLocaleString()} ETB`}
-                      secondary="Total Amount"
-                    />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText
-                      primary={selectedItem.items}
-                      secondary="Number of Items"
-                    />
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <ListItemText
-                      primary={selectedItem.orderNumber ? selectedItem.salesRep : selectedItem.preparedBy}
-                      secondary={selectedItem.orderNumber ? 'Sales Representative' : 'Prepared By'}
-                    />
-                  </ListItem>
-                </List>
-              </Grid>
-              {selectedItem.orderNumber && (
-                <>
-                  <Grid item xs={12} md={6}>
-                    <List>
+                    {selectedItem.orderNumber && (
+                      <Box>
+                        <Chip
+                          label={selectedItem.priority}
+                          color={getPriorityColor(selectedItem.priority) as any}
+                          size="medium"
+                          variant="outlined"
+                        />
+                      </Box>
+                    )}
+                  </Grid>
+                </Grid>
+              </Paper>
+
+              {/* Main Details */}
+              <Grid container spacing={4}>
+                {/* Left Column */}
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: 'primary.main' }}>
+                    📄 Document Information
+                  </Typography>
+                  <List dense>
+                    <ListItem>
+                      <ListItemIcon>
+                        <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32 }}>
+                          📅
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={selectedItem.orderNumber ? selectedItem.orderDate : selectedItem.quotationDate}
+                        secondary={selectedItem.orderNumber ? 'Order Date' : 'Quotation Date'}
+                      />
+                    </ListItem>
+                    {selectedItem.orderNumber ? (
                       <ListItem>
+                        <ListItemIcon>
+                          <Avatar sx={{ bgcolor: 'success.main', width: 32, height: 32 }}>
+                            🚚
+                          </Avatar>
+                        </ListItemIcon>
                         <ListItemText
                           primary={selectedItem.deliveryDate}
                           secondary="Delivery Date"
                         />
                       </ListItem>
-                      <Divider />
+                    ) : (
                       <ListItem>
+                        <ListItemIcon>
+                          <Avatar sx={{ bgcolor: 'warning.main', width: 32, height: 32 }}>
+                            ⏰
+                          </Avatar>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={selectedItem.validUntil}
+                          secondary="Valid Until"
+                        />
+                      </ListItem>
+                    )}
+                    <ListItem>
+                      <ListItemIcon>
+                        <Avatar sx={{ bgcolor: 'info.main', width: 32, height: 32 }}>
+                          💰
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${selectedItem.totalAmount.toLocaleString()} ETB`}
+                        secondary="Total Amount"
+                      />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon>
+                        <Avatar sx={{ bgcolor: 'secondary.main', width: 32, height: 32 }}>
+                          📦
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${selectedItem.items} item${selectedItem.items !== 1 ? 's' : ''}`}
+                        secondary="Number of Items"
+                      />
+                    </ListItem>
+                  </List>
+                </Grid>
+
+                {/* Right Column */}
+                <Grid item xs={12} md={6}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, color: 'primary.main' }}>
+                    👥 People & Location
+                  </Typography>
+                  <List dense>
+                    <ListItem>
+                      <ListItemIcon>
+                        <Avatar sx={{ bgcolor: 'purple', width: 32, height: 32 }}>
+                          👤
+                        </Avatar>
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={selectedItem.orderNumber ? selectedItem.salesRep : selectedItem.preparedBy}
+                        secondary={selectedItem.orderNumber ? 'Sales Representative' : 'Prepared By'}
+                      />
+                    </ListItem>
+                    {selectedItem.orderNumber && (
+                      <ListItem>
+                        <ListItemIcon>
+                          <Avatar sx={{ bgcolor: 'green', width: 32, height: 32 }}>
+                            📍
+                          </Avatar>
+                        </ListItemIcon>
                         <ListItemText
                           primary={selectedItem.region}
                           secondary="Delivery Region"
                         />
                       </ListItem>
-                    </List>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <List>
-                      <ListItem>
-                        <ListItemText
-                          primary={
-                            <Chip
-                              label={selectedItem.status}
-                              color={getStatusColor(selectedItem.status) as any}
-                              size="small"
-                            />
-                          }
-                          secondary="Status"
-                        />
-                      </ListItem>
-                      <Divider />
-                      <ListItem>
-                        <ListItemText
-                          primary={
-                            <Chip
-                              label={selectedItem.priority}
-                              color={getPriorityColor(selectedItem.priority) as any}
-                              size="small"
-                            />
-                          }
-                          secondary="Priority"
-                        />
-                      </ListItem>
-                    </List>
-                  </Grid>
-                </>
-              )}
-              {selectedItem.quotationNumber && (
-                <Grid item xs={12} md={6}>
-                  <List>
-                    <ListItem>
-                      <ListItemText
-                        primary={selectedItem.validUntil}
-                        secondary="Valid Until"
-                      />
-                    </ListItem>
-                    <Divider />
-                    <ListItem>
-                      <ListItemText
-                        primary={
-                          <Chip
-                            label={selectedItem.status}
-                            color={getStatusColor(selectedItem.status) as any}
-                            size="small"
-                          />
-                        }
-                        secondary="Status"
-                      />
-                    </ListItem>
+                    )}
                   </List>
+
+                  {/* Customer Information */}
+                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, mt: 3, color: 'primary.main' }}>
+                    🏢 Customer Details
+                  </Typography>
+                  {(() => {
+                    const customer = mockCustomers.find(c => c.name === selectedItem.customer);
+                    if (customer) {
+                      return (
+                        <List dense>
+                          <ListItem>
+                            <ListItemIcon>
+                              <Avatar sx={{ bgcolor: 'orange', width: 32, height: 32 }}>
+                                🏷️
+                              </Avatar>
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={customer.code}
+                              secondary="Customer Code"
+                            />
+                          </ListItem>
+                          <ListItem>
+                            <ListItemIcon>
+                              <Avatar sx={{ bgcolor: 'blue', width: 32, height: 32 }}>
+                                📧
+                              </Avatar>
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={customer.email}
+                              secondary="Email Address"
+                            />
+                          </ListItem>
+                          <ListItem>
+                            <ListItemIcon>
+                              <Avatar sx={{ bgcolor: 'teal', width: 32, height: 32 }}>
+                                📱
+                              </Avatar>
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={customer.phone}
+                              secondary="Phone Number"
+                            />
+                          </ListItem>
+                          <ListItem>
+                            <ListItemIcon>
+                              <Avatar sx={{ bgcolor: 'indigo', width: 32, height: 32 }}>
+                                🏛️
+                              </Avatar>
+                            </ListItemIcon>
+                            <ListItemText
+                              primary={customer.type}
+                              secondary="Customer Type"
+                            />
+                          </ListItem>
+                        </List>
+                      );
+                    }
+                    return <Typography color="text.secondary">Customer details not found</Typography>;
+                  })()}
                 </Grid>
-              )}
-            </Grid>
+              </Grid>
+
+              {/* Actions Summary */}
+              <Paper sx={{ p: 2, mt: 3, bgcolor: 'info.light' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1 }}>
+                  🔧 Available Actions
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  <Chip icon={<EditIcon />} label="Edit" variant="outlined" />
+                  <Chip icon={<PrintIcon />} label="Print" variant="outlined" />
+                  <Chip icon={<EmailIcon />} label="Email" variant="outlined" />
+                  {selectedItem.status === 'Draft' && (
+                    <Chip icon={<ApproveIcon />} label="Approve" variant="outlined" color="success" />
+                  )}
+                  {selectedItem.quotationNumber && selectedItem.status !== 'Converted' && (
+                    <Chip icon={<ConvertIcon />} label="Convert to Order" variant="outlined" color="warning" />
+                  )}
+                </Box>
+              </Paper>
+            </Box>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
-          <Button variant="contained" onClick={() => handleAction('print')}>
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={() => { setIsViewDialogOpen(false); setSelectedItem(null); }} size="large">
+            Close
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={() => handleAction('edit')}
+            startIcon={<EditIcon />}
+            size="large"
+          >
+            Edit
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={() => handleAction('print')}
+            startIcon={<PrintIcon />}
+            color="secondary"
+            size="large"
+          >
             Print
           </Button>
         </DialogActions>
@@ -1228,84 +1504,105 @@ const Sales: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           {selectedItem && (
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Customer"
-                  defaultValue={selectedItem.customer}
-                  disabled
-                />
+            <Box component="form" sx={{ mt: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Customer"
+                    defaultValue={selectedItem.customer}
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                {selectedItem.orderNumber ? (
+                  <>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Delivery Date"
+                        type="date"
+                        defaultValue={selectedItem.deliveryDate}
+                        InputLabelProps={{ shrink: true }}
+                        id="edit-delivery-date"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <FormControl fullWidth required>
+                        <InputLabel>Priority</InputLabel>
+                        <Select 
+                          defaultValue={selectedItem.priority} 
+                          label="Priority"
+                          id="edit-priority"
+                        >
+                          <MenuItem value="Low">Low</MenuItem>
+                          <MenuItem value="Normal">Normal</MenuItem>
+                          <MenuItem value="High">High</MenuItem>
+                          <MenuItem value="Urgent">Urgent</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <Autocomplete
+                        options={ethiopianRegions}
+                        defaultValue={selectedItem.region}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Delivery Region" required />
+                        )}
+                        onChange={(_, value) => {
+                          const input = document.getElementById('edit-region') as HTMLInputElement;
+                          if (input) input.value = value || '';
+                        }}
+                      />
+                      <input type="hidden" id="edit-region" defaultValue={selectedItem.region} />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Sales Representative"
+                        defaultValue={selectedItem.salesRep}
+                        id="edit-sales-rep"
+                        required
+                      />
+                    </Grid>
+                  </>
+                ) : (
+                  <>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Valid Until"
+                        type="date"
+                        defaultValue={selectedItem.validUntil}
+                        InputLabelProps={{ shrink: true }}
+                        id="edit-valid-until"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Prepared By"
+                        defaultValue={selectedItem.preparedBy}
+                        id="edit-prepared-by"
+                        required
+                      />
+                    </Grid>
+                  </>
+                )}
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Notes"
+                    multiline
+                    rows={3}
+                    placeholder="Additional notes..."
+                    id="edit-notes"
+                  />
+                </Grid>
               </Grid>
-              {selectedItem.orderNumber ? (
-                <>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Delivery Date"
-                      type="date"
-                      defaultValue={selectedItem.deliveryDate}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>Priority</InputLabel>
-                      <Select defaultValue={selectedItem.priority} label="Priority">
-                        <MenuItem value="Low">Low</MenuItem>
-                        <MenuItem value="Normal">Normal</MenuItem>
-                        <MenuItem value="High">High</MenuItem>
-                        <MenuItem value="Urgent">Urgent</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Autocomplete
-                      options={ethiopianRegions}
-                      defaultValue={selectedItem.region}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Delivery Region" />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Sales Representative"
-                      defaultValue={selectedItem.salesRep}
-                    />
-                  </Grid>
-                </>
-              ) : (
-                <>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Valid Until"
-                      type="date"
-                      defaultValue={selectedItem.validUntil}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Prepared By"
-                      defaultValue={selectedItem.preparedBy}
-                    />
-                  </Grid>
-                </>
-              )}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Notes"
-                  multiline
-                  rows={3}
-                  placeholder="Additional notes..."
-                />
-              </Grid>
-            </Grid>
+            </Box>
           )}
         </DialogContent>
         <DialogActions>
@@ -1313,10 +1610,43 @@ const Sales: React.FC = () => {
           <Button 
             variant="contained" 
             onClick={() => {
-              setIsEditDialogOpen(false);
-              setSuccessMessage(`${selectedItem?.orderNumber || selectedItem?.quotationNumber} has been updated successfully!`);
-              setShowSuccess(true);
-              setTimeout(() => setShowSuccess(false), 3000);
+              if (!selectedItem) return;
+              
+              const editData: any = {};
+              
+              if (selectedItem.orderNumber) {
+                const deliveryDate = (document.getElementById('edit-delivery-date') as HTMLInputElement)?.value;
+                const priority = (document.getElementById('edit-priority') as HTMLInputElement)?.value;
+                const region = (document.getElementById('edit-region') as HTMLInputElement)?.value;
+                const salesRep = (document.getElementById('edit-sales-rep') as HTMLInputElement)?.value;
+                const notes = (document.getElementById('edit-notes') as HTMLTextAreaElement)?.value;
+                
+                if (!deliveryDate || !priority || !region || !salesRep) {
+                  alert('Please fill in all required fields');
+                  return;
+                }
+                
+                editData.deliveryDate = deliveryDate;
+                editData.priority = priority;
+                editData.region = region;
+                editData.salesRep = salesRep;
+                editData.notes = notes;
+              } else {
+                const validUntil = (document.getElementById('edit-valid-until') as HTMLInputElement)?.value;
+                const preparedBy = (document.getElementById('edit-prepared-by') as HTMLInputElement)?.value;
+                const notes = (document.getElementById('edit-notes') as HTMLTextAreaElement)?.value;
+                
+                if (!validUntil || !preparedBy) {
+                  alert('Please fill in all required fields');
+                  return;
+                }
+                
+                editData.validUntil = validUntil;
+                editData.preparedBy = preparedBy;
+                editData.notes = notes;
+              }
+              
+              handleEdit(editData);
             }}
           >
             Save Changes

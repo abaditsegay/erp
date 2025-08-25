@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Order Confirmation</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #2e7d32, #4caf50); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .confirmation-box { background: #e8f5e8; border-left: 4px solid #4caf50; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .order-summary { background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .amount { font-size: 18px; font-weight: bold; color: #2e7d32; }
+        .total-amount { font-size: 20px; font-weight: bold; color: #1976d2; background: #e3f2fd; padding: 10px; border-radius: 4px; }
+        .button { display: inline-block; background: #2e7d32; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .timeline { position: relative; padding: 20px 0; }
+        .timeline-item { display: flex; align-items: center; margin: 15px 0; }
+        .timeline-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; }
+        .confirmed { background: #4caf50; color: white; }
+        .pending { background: #ff9800; color: white; }
+        .upcoming { background: #e0e0e0; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 የሽያጭ ትዕዛዝ ተረጋግጧል / Sales Order Confirmed</h1>
+            <p>Ethiopian Sales Management System</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{customerName}},</h2>
+            
+            <div class="confirmation-box">
+                <h3>✅ ትዕዛዝዎ ተረጋግጧል / Your Order is Confirmed</h3>
+                <p>አመሰግናለን! የእርስዎ ትዕዛዝ ተቀብሎ ተረጋግጧል። በመላኪያ ሂደት ውስጥ እንገኛለን።</p>
+                <p>Thank you! Your order has been received and confirmed. We are now processing it for delivery.</p>
+            </div>
+            
+            <div class="order-summary">
+                <h3>📋 የትዕዛዝ ማጠቃለያ / Order Summary</h3>
+                <table class="details-table">
+                    <tr>
+                        <th>የትዕዛዝ ቁጥር / Order Number:</th>
+                        <td><strong>{{orderNumber}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የትዕዛዝ ቀን / Order Date:</th>
+                        <td>{{orderDate}}</td>
+                    </tr>
+                    <tr>
+                        <th>የመላኪያ ቀን / Delivery Date:</th>
+                        <td><strong>{{expectedDeliveryDate}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የመላኪያ አድራሻ / Delivery Address:</th>
+                        <td>{{deliveryAddress}}</td>
+                    </tr>
+                    <tr>
+                        <th>የመክፈያ ሁኔታ / Payment Terms:</th>
+                        <td>{{paymentTerms}}</td>
+                    </tr>
+                    <tr>
+                        <th>የሽያጭ ወኪል / Sales Representative:</th>
+                        <td>{{salesRepName}} - {{salesRepPhone}}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h3>🛍️ የተትዕዛዝ እቃዎች / Ordered Items:</h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th>የእቃ ስም / Item Name</th>
+                        <th>መጠን / Quantity</th>
+                        <th>አሃድ ዋጋ / Unit Price</th>
+                        <th>ድምር / Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                    <tr>
+                        <td>
+                            <strong>{{itemName}}</strong><br>
+                            <small>{{description}}</small>
+                        </td>
+                        <td>{{quantity}} {{unit}}</td>
+                        <td>{{unitPrice}} ብር</td>
+                        <td class="amount">{{itemTotal}} ብር</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h3>💰 የክፍያ ዝርዝር / Payment Breakdown:</h3>
+                <table class="details-table" style="margin: 10px 0;">
+                    <tr>
+                        <td><strong>ንዑስ ድምር / Subtotal:</strong></td>
+                        <td class="amount">{{subtotal}} ብር</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ተደማሪ ዋጋ ታክስ (VAT) 15%:</strong></td>
+                        <td class="amount">{{vatAmount}} ብር</td>
+                    </tr>
+                    {{#if discountAmount}}
+                    <tr>
+                        <td><strong>ቅናש / Discount ({{discountPercentage}}%):</strong></td>
+                        <td class="amount">-{{discountAmount}} ብር</td>
+                    </tr>
+                    {{/if}}
+                    <tr>
+                        <td><strong>የማጓጓዣ ዋጋ / Shipping:</strong></td>
+                        <td class="amount">{{shippingCost}} ብር</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #2e7d32;">
+                        <td class="total-amount"><strong>ጠቅላላ መጠን / Grand Total:</strong></td>
+                        <td class="total-amount">{{grandTotal}} ብር (ETB)</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h3>📅 የትዕዛዝ ሂደት / Order Timeline:</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon confirmed">✓</div>
+                    <div>
+                        <strong>ትዕዛዝ ተረጋግጧል / Order Confirmed</strong><br>
+                        <small>{{orderDate}} - {{orderTime}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon {{processingStatus}}">📦</div>
+                    <div>
+                        <strong>ማዘጋጀት እና መጠቅለል / Processing & Packaging</strong><br>
+                        <small>{{processingStartDate}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon upcoming">🚚</div>
+                    <div>
+                        <strong>መላኪያ / Shipment</strong><br>
+                        <small>{{shipmentDate}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon upcoming">📍</div>
+                    <div>
+                        <strong>አቅርቦት / Delivery</strong><br>
+                        <small>{{expectedDeliveryDate}}</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📱 የትዕዛዝ ክትትል / Order Tracking:</h4>
+                <p>የትዕዛዝዎን ሂደት በመስመር ላይ መከታተል ይችላሉ፡</p>
+                <p>Track your order online using:</p>
+                <p><strong>የክትትል ቁጥር / Tracking Number:</strong> {{trackingNumber}}</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{trackOrderUrl}}" class="button">📍 ትዕዛዝ መከታተል / Track Order</a>
+                <a href="{{invoiceUrl}}" class="button" style="background: #1976d2;">📄 ደረሰኝ ማውረድ / Download Invoice</a>
+                <a href="{{supportUrl}}" class="button" style="background: #ff9800;">💬 የደንበኛ አገልግሎት / Customer Support</a>
+            </div>
+            
+            <h3>📞 የግንኙነት መረጃ / Contact Information:</h3>
+            <ul>
+                <li><strong>የሽያጭ ወኪል / Sales Rep:</strong> {{salesRepName}} - {{salesRepPhone}}</li>
+                <li><strong>የደንበኛ አገልግሎት / Customer Service:</strong> +251-11-XXX-XXXX</li>
+                <li><strong>ኢሜይል / Email:</strong> sales@company.et</li>
+                <li><strong>የአደጋ ጊዜ ግንኙነት / Emergency Contact:</strong> +251-9XX-XXX-XXX</li>
+            </ul>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>⚠️ አስፈላጊ ማስታወሻዎች / Important Notes:</h4>
+                <ul>
+                    <li>የመላኪያ አድራሻ መቀየር ከፈለጉ ቢያንስ በ24 ሰዓት ቀደም ብሎ ያሳውቁን</li>
+                    <li>Please notify us at least 24 hours in advance for delivery address changes</li>
+                    <li>የክፍያ ሁኔታ: {{paymentTerms}}</li>
+                    <li>መላኪያ በፍጥነት ለማረጋገጥ እርስዎ ወይም ወኪልዎ መገኘት አለበት</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System - Sales Department</p>
+            <p>አመሰግናለን እና ቀጣይ ነገሮችን እንጠብቃለን! / Thank you for your business!</p>
+        </div>
+    </div>
+</body>
+</html>

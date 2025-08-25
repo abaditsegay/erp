@@ -16,6 +16,8 @@ import {
   Inventory,
   AttachMoney,
   Assignment,
+  Analytics,
+  InventoryRounded,
 } from '@mui/icons-material';
 
 const Dashboard: React.FC = () => {
@@ -43,6 +45,12 @@ const Dashboard: React.FC = () => {
         break;
       case 'view-inventory':
         navigate('/inventory');
+        break;
+      case 'advanced-analytics':
+        navigate('/analytics');
+        break;
+      case 'advanced-inventory':
+        navigate('/inventory-advanced');
         break;
       default:
         console.log('Unknown action:', action);
@@ -220,6 +228,44 @@ const Dashboard: React.FC = () => {
                   }}
                 >
                   Process Payment
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  startIcon={<Analytics />}
+                  onClick={() => handleQuickAction('advanced-analytics')}
+                  sx={{ 
+                    justifyContent: 'flex-start',
+                    py: 2,
+                    backgroundColor: '#8B5CF6',
+                    '&:hover': {
+                      backgroundColor: '#7C3AED',
+                    }
+                  }}
+                >
+                  Advanced Analytics
+                </Button>
+              </Grid>
+              <Grid item xs={6}>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  startIcon={<InventoryRounded />}
+                  onClick={() => handleQuickAction('advanced-inventory')}
+                  sx={{ 
+                    justifyContent: 'flex-start',
+                    py: 2,
+                    color: '#8B5CF6',
+                    borderColor: '#8B5CF6',
+                    '&:hover': {
+                      borderColor: '#7C3AED',
+                      backgroundColor: 'rgba(139, 92, 246, 0.04)',
+                    }
+                  }}
+                >
+                  Advanced Inventory
                 </Button>
               </Grid>
             </Grid>

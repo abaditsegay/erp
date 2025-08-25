@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Request Approval</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #4caf50, #66bb6a); color: white; padding: 30px; text-align: center; }
+        .header.rejected { background: linear-gradient(135deg, #f44336, #e57373); }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .status-box { padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center; }
+        .approved { background: #e8f5e8; border-left: 4px solid #4caf50; color: #2e7d32; }
+        .rejected { background: #ffebee; border-left: 4px solid #f44336; color: #c62828; }
+        .pending { background: #fff3e0; border-left: 4px solid #ff9800; color: #ef6c00; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .leave-info { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .button { display: inline-block; background: #4caf50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .button.secondary { background: #2196f3; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .approval-chain { background: #f9f9f9; padding: 15px; border-radius: 6px; margin: 15px 0; }
+        .approver-item { display: flex; align-items: center; margin: 10px 0; }
+        .approver-status { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; font-size: 14px; }
+        .status-approved { background: #4caf50; color: white; }
+        .status-rejected { background: #f44336; color: white; }
+        .status-pending { background: #ff9800; color: white; }
+        .status-not-reached { background: #e0e0e0; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header {{statusClass}}">
+            <h1>{{statusIcon}} የመዝናኛ ቅባሪት {{statusText}} / Leave Request {{statusTextEn}}</h1>
+            <p>Ethiopian Human Resources Management</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{employeeName}},</h2>
+            
+            <div class="status-box {{statusClass}}">
+                <h3>{{statusIcon}} የመዝናኛ ጥያቄዎ {{statusText}}!</h3>
+                <h3>Your Leave Request has been {{statusTextEn}}!</h3>
+                {{#if approvalDate}}
+                <p><strong>የውሳኔ ቀን / Decision Date:</strong> {{approvalDate}}</p>
+                {{/if}}
+            </div>
+            
+            <div class="leave-info">
+                <h3>📋 የመዝናኛ ዝርዝር / Leave Request Details:</h3>
+                <table class="details-table">
+                    <tr>
+                        <th>የጥያቄ ቁጥር / Request ID:</th>
+                        <td><strong>{{requestId}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የመዝናኛ አይነት / Leave Type:</th>
+                        <td>{{leaveType}} / {{leaveTypeEn}}</td>
+                    </tr>
+                    <tr>
+                        <th>የመጀመሪያ ቀን / Start Date:</th>
+                        <td>{{startDate}}</td>
+                    </tr>
+                    <tr>
+                        <th>የመጨረሻ ቀን / End Date:</th>
+                        <td>{{endDate}}</td>
+                    </tr>
+                    <tr>
+                        <th>የቀናት ብዛት / Number of Days:</th>
+                        <td><strong>{{numberOfDays}} ቀናት / days</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የመተካት ሰራተኛ / Cover Person:</th>
+                        <td>{{coverPerson}}</td>
+                    </tr>
+                    <tr>
+                        <th>የመቅረብ ቀን / Submitted Date:</th>
+                        <td>{{submissionDate}}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            {{#if reason}}
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                <h4>📝 የመዝናኛ ምክንያት / Leave Reason:</h4>
+                <p>{{reason}}</p>
+            </div>
+            {{/if}}
+            
+            {{#if approverComments}}
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                <h4>💬 የአፈቃቃሪ አስተያየት / Approver Comments:</h4>
+                <p>{{approverComments}}</p>
+            </div>
+            {{/if}}
+            
+            <div class="approval-chain">
+                <h3>👥 የፈቃድ ሰንሰለት / Approval Chain:</h3>
+                {{#each approvalChain}}
+                <div class="approver-item">
+                    <div class="approver-status status-{{status}}">
+                        {{#if (eq status 'approved')}}✓{{/if}}
+                        {{#if (eq status 'rejected')}}✗{{/if}}
+                        {{#if (eq status 'pending')}}⏳{{/if}}
+                        {{#if (eq status 'not-reached')}}○{{/if}}
+                    </div>
+                    <div>
+                        <strong>{{approverName}}</strong> - {{approverTitle}}<br>
+                        <small>
+                            {{#if actionDate}}
+                                {{actionDate}} - {{statusText}}
+                                {{#if comments}}
+                                <br>አስተያየት: {{comments}}
+                                {{/if}}
+                            {{else}}
+                                {{#if (eq status 'pending')}}
+                                በመጠበቅ ላይ / Pending approval
+                                {{else}}
+                                ገና አልደረሰም / Not yet reached
+                                {{/if}}
+                            {{/if}}
+                        </small>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            
+            {{#if (eq status 'approved')}}
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h3>✅ ቀጣይ እርምጃዎች / Next Steps:</h3>
+                <ul>
+                    <li>የመዝናኛ ዝርዝርዎን በHR ስርዓት ውስጥ ማየት ይችላሉ</li>
+                    <li>You can view your leave balance in the HR system</li>
+                    <li>ከመዝናኛዎ በፊት የስራ ዝውውር ማከናወን ያስታውሱ</li>
+                    <li>Remember to complete work handover before your leave</li>
+                    <li>የመዝናኛ ሰርተፍኬት ከHR ክፍል ያውርዱ</li>
+                    <li>Download leave certificate from HR department</li>
+                </ul>
+            </div>
+            
+            <h3>📊 የመዝናኛ ሂሳብዎ / Your Leave Balance:</h3>
+            <table class="details-table">
+                <tr>
+                    <th>የመዝናኛ አይነት / Leave Type</th>
+                    <th>በቀሪው / Remaining</th>
+                    <th>በዓመት / Annual</th>
+                    <th>ጥቅም ላይ የዋለ / Used</th>
+                </tr>
+                {{#each leaveBalance}}
+                <tr>
+                    <td>{{leaveType}}</td>
+                    <td><strong>{{remaining}} ቀናት</strong></td>
+                    <td>{{annual}} ቀናት</td>
+                    <td>{{used}} ቀናት</td>
+                </tr>
+                {{/each}}
+            </table>
+            {{/if}}
+            
+            {{#if (eq status 'rejected')}}
+            <div style="background: #ffebee; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h3>❌ ለውድቅ መሆን ምክንያቶች / Reasons for Rejection:</h3>
+                {{#if rejectionReasons}}
+                <ul>
+                    {{#each rejectionReasons}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+                {{/if}}
+                
+                <h4>🔄 ቀጣይ አማራጮች / Next Options:</h4>
+                <ul>
+                    <li>ችግሮቹን በማስተካከል እንደገና መተግበር ይችላሉ</li>
+                    <li>You can reapply after addressing the issues</li>
+                    <li>ከቀጥታ ተቆጣጣሪዎ ጋር መወያየት ይችላሉ</li>
+                    <li>You can discuss with your direct supervisor</li>
+                    <li>ለሌላ ቀን መዝናኛ ማመልከት ይችላሉ</li>
+                    <li>You can apply for leave on alternative dates</li>
+                </ul>
+            </div>
+            {{/if}}
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{viewRequestUrl}}" class="button">📋 ጥያቄ ማየት / View Request</a>
+                {{#if (eq status 'approved')}}
+                <a href="{{downloadCertificateUrl}}" class="button secondary">📄 ሰርተፊኬት ማውረድ / Download Certificate</a>
+                {{/if}}
+                {{#if (eq status 'rejected')}}
+                <a href="{{reapplyUrl}}" class="button secondary">🔄 እንደገና ማመልከት / Reapply</a>
+                {{/if}}
+                <a href="{{hrContactUrl}}" class="button" style="background: #ff9800;">👥 HR ግንኙነት / Contact HR</a>
+            </div>
+            
+            <h3>📞 HR ግንኙነት / HR Contact Information:</h3>
+            <ul>
+                <li><strong>HR መምሪያ / HR Department:</strong> +251-11-XXX-XXXX</li>
+                <li><strong>የመዝናኛ ኮዲኔተር / Leave Coordinator:</strong> {{leaveCoordinatorName}} - {{leaveCoordinatorPhone}}</li>
+                <li><strong>ኢሜይል / Email:</strong> hr@company.et</li>
+                <li><strong>የስራ ሰዓት / Office Hours:</strong> ሰኞ-ዓርብ 8:00 ጠ.ሰ - 5:00 ማ.ሰ</li>
+            </ul>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📝 አስፈላጊ ማስታወሻዎች / Important Notes:</h4>
+                <ul>
+                    <li>የመዝናኛ ፖሊሲዎችን በሰራተኛ ዘዴ ውስጥ ይመልከቱ</li>
+                    <li>Review leave policies in the employee handbook</li>
+                    <li>ድንገተኛ መዝናኛ ለሕክምና ምክንያት ብቻ ይፈቀዳል</li>
+                    <li>Emergency leave is only approved for medical reasons</li>
+                    <li>የመዝናኛ ጥያቄዎች ቢያንስ በ7 ቀናት ቀደም ብሎ መቀረብ አለባቸው</li>
+                    <li>Leave requests must be submitted at least 7 days in advance</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ሰው ሃይል አስተዳደር ስርዓት</p>
+            <p>Ethiopian Human Resources Management System - Leave Management</p>
+            <p>ለበለጠ መረጃ HR መምሪያውን ያነጋግሩ / Contact HR Department for more information</p>
+        </div>
+    </div>
+</body>
+</html>

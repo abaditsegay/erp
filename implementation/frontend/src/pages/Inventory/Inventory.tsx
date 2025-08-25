@@ -40,10 +40,20 @@ import {
   Edit,
   AttachMoney,
   Public,
+  Assignment,
 } from '@mui/icons-material';
 import { useDemoInventoryDashboard, useDemoWarehouses } from '../../hooks/useDemoInventory';
 import { ethiopianHelpers } from '../../services/inventoryService';
 import { ETHIOPIAN_REGIONS } from '../../types/inventory';
+import { InventoryItem } from '../../types/inventoryAnalytics';
+
+// Import new dialog components
+import StockViewDialog from '../../components/Inventory/StockViewDialog';
+import EditItemDialog from '../../components/Inventory/EditItemDialog';
+import ABCAnalysisDialog from '../../components/Inventory/ABCAnalysisDialog';
+import InventoryFeaturesDialog from '../../components/Inventory/InventoryFeaturesDialog';
+import EditWarehouseDialog from '../../components/Inventory/EditWarehouseDialog';
+import AddItemDialog from '../../components/Inventory/AddItemDialog';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -71,6 +81,21 @@ const Inventory: React.FC = () => {
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
   const [activeTab, setActiveTab] = useState(0);
 
+  // Dialog states
+  const [stockViewOpen, setStockViewOpen] = useState(false);
+  const [editItemOpen, setEditItemOpen] = useState(false);
+  const [abcAnalysisOpen, setAbcAnalysisOpen] = useState(false);
+  const [featureDialogOpen, setFeatureDialogOpen] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState<'slow_moving' | 'stock_count' | 'valuation' | 'task_status' | 'reorder'>('slow_moving');
+  const [selectedWarehouseId, setSelectedWarehouseId] = useState<number | undefined>();
+  const [selectedItemId, setSelectedItemId] = useState<number | undefined>();
+
+  // Additional state for warehouse name
+  const [selectedWarehouseName, setSelectedWarehouseName] = useState<string>('');
+  const [editWarehouseOpen, setEditWarehouseOpen] = useState(false);
+  const [editWarehouseId, setEditWarehouseId] = useState<number | undefined>();
+  const [addItemOpen, setAddItemOpen] = useState(false);
+
   const {
     dashboard,
     lowStock,
@@ -84,6 +109,40 @@ const Inventory: React.FC = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+  };
+
+  const handleOpenFeatureDialog = (feature: 'slow_moving' | 'stock_count' | 'valuation' | 'task_status' | 'reorder', warehouseId?: number, itemId?: number) => {
+    setSelectedFeature(feature);
+    setSelectedWarehouseId(warehouseId);
+    setSelectedItemId(itemId);
+    setFeatureDialogOpen(true);
+  };
+
+  const handleViewStock = (warehouseId: number, warehouseName: string) => {
+    setSelectedWarehouseId(warehouseId);
+    setSelectedWarehouseName(warehouseName);
+    setStockViewOpen(true);
+  };
+
+  const handleReorder = (itemId: number) => {
+    setSelectedItemId(itemId);
+    handleOpenFeatureDialog('reorder', undefined, itemId);
+  };
+
+  const handleEditWarehouse = (warehouseId: number) => {
+    setEditWarehouseId(warehouseId);
+    setEditWarehouseOpen(true);
+  };
+
+  const handleAddItem = () => {
+    setAddItemOpen(true);
+  };
+
+  const handleItemAdded = (item: InventoryItem) => {
+    // In real implementation, this would refresh data from API
+    console.log('New item added:', item);
+    // Force a data refresh
+    window.location.reload();
   };
 
   if (isLoading) {
@@ -136,7 +195,7 @@ const Inventory: React.FC = () => {
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => console.log('Add item')}
+            onClick={handleAddItem}
           >
             Add Item
           </Button>
@@ -295,10 +354,18 @@ const Inventory: React.FC = () => {
                     </Box>
                   </CardContent>
                   <CardActions>
-                    <Button size="small" startIcon={<Visibility />}>
+                    <Button 
+                      size="small" 
+                      startIcon={<Visibility />}
+                      onClick={() => handleViewStock(warehouse.id, warehouse.name)}
+                    >
                       View Stock
                     </Button>
-                    <Button size="small" startIcon={<Edit />}>
+                    <Button 
+                      size="small" 
+                      startIcon={<Edit />}
+                      onClick={() => handleEditWarehouse(warehouse.id)}
+                    >
                       Edit
                     </Button>
                   </CardActions>
@@ -336,7 +403,12 @@ const Inventory: React.FC = () => {
                     <Typography variant="h6" color="warning.main">
                       {stock.currentQuantity}
                     </Typography>
-                    <Button size="small" variant="outlined" sx={{ mt: 1 }}>
+                    <Button 
+                      size="small" 
+                      variant="outlined" 
+                      sx={{ mt: 1 }}
+                      onClick={() => handleReorder(stock.item.id)}
+                    >
                       Reorder
                     </Button>
                   </Box>
@@ -449,17 +521,40 @@ const Inventory: React.FC = () => {
                   Quick Actions
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
-                  <Button variant="outlined" startIcon={<Analytics />}>
+                  <Button 
+                    variant="outlined" 
+                    startIcon={<Analytics />}
+                    onClick={() => setAbcAnalysisOpen(true)}
+                  >
                     ABC Analysis Report
                   </Button>
-                  <Button variant="outlined" startIcon={<TrendingDown />}>
+                  <Button 
+                    variant="outlined" 
+                    startIcon={<TrendingDown />}
+                    onClick={() => handleOpenFeatureDialog('slow_moving')}
+                  >
                     Slow Moving Items
                   </Button>
-                  <Button variant="outlined" startIcon={<AccountBalance />}>
+                  <Button 
+                    variant="outlined" 
+                    startIcon={<AccountBalance />}
+                    onClick={() => handleOpenFeatureDialog('stock_count')}
+                  >
                     Stock Count Procedure
                   </Button>
-                  <Button variant="outlined" startIcon={<AttachMoney />}>
+                  <Button 
+                    variant="outlined" 
+                    startIcon={<AttachMoney />}
+                    onClick={() => handleOpenFeatureDialog('valuation')}
+                  >
                     Valuation Report (ETB)
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    startIcon={<Assignment />}
+                    onClick={() => handleOpenFeatureDialog('task_status')}
+                  >
+                    Task Status
                   </Button>
                 </Box>
               </CardContent>
@@ -467,6 +562,46 @@ const Inventory: React.FC = () => {
           </Grid>
         </Grid>
       </TabPanel>
+
+      {/* Dialog Components */}
+      <StockViewDialog
+        open={stockViewOpen}
+        onClose={() => setStockViewOpen(false)}
+        warehouseId={selectedWarehouseId || 1}
+        warehouseName={selectedWarehouseName}
+      />
+
+      <EditItemDialog
+        open={editItemOpen}
+        onClose={() => setEditItemOpen(false)}
+        itemId={selectedItemId || 1}
+      />
+
+      <ABCAnalysisDialog
+        open={abcAnalysisOpen}
+        onClose={() => setAbcAnalysisOpen(false)}
+        warehouseId={selectedWarehouseId}
+      />
+
+      <InventoryFeaturesDialog
+        open={featureDialogOpen}
+        onClose={() => setFeatureDialogOpen(false)}
+        feature={selectedFeature}
+        warehouseId={selectedWarehouseId}
+        itemId={selectedItemId}
+      />
+
+      <EditWarehouseDialog
+        open={editWarehouseOpen}
+        onClose={() => setEditWarehouseOpen(false)}
+        warehouseId={editWarehouseId}
+      />
+
+      <AddItemDialog
+        open={addItemOpen}
+        onClose={() => setAddItemOpen(false)}
+        onItemAdded={handleItemAdded}
+      />
     </Box>
   );
 };

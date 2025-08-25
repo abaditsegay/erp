@@ -288,15 +288,15 @@ const GRVDetailsDialog: React.FC<GRVDetailsDialogProps> = ({
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textSecondary" component="div">
                   GRV Number
                 </Typography>
-                <Typography variant="h6" color="primary">
+                <Typography variant="h6" color="primary" component="div">
                   {grvData.grvNumber}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textSecondary" component="div">
                   Status
                 </Typography>
                 <Chip 
@@ -306,28 +306,28 @@ const GRVDetailsDialog: React.FC<GRVDetailsDialogProps> = ({
                 />
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textSecondary" component="div">
                   Purchase Order
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" component="div">
                   {grvData.purchaseOrder.poNumber}
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textSecondary" component="div">
                   Delivery Note
                 </Typography>
-                <Typography variant="body1">
+                <Typography variant="body1" component="div">
                   {grvData.deliveryNote}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textSecondary" component="div">
                   Received Date & Time
                 </Typography>
                 <Box display="flex" alignItems="center">
                   <CalendarIcon sx={{ mr: 1, fontSize: 16 }} color="action" />
-                  <Typography variant="body1">
+                  <Typography variant="body1" component="span">
                     {formatDateTime(grvData.receivedDate)}
                   </Typography>
                 </Box>

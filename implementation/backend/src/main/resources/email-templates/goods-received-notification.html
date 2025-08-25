@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goods Received Notification</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #4caf50, #66bb6a); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .success-box { background: #e8f5e8; border-left: 4px solid #4caf50; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .received { color: #4caf50; font-weight: bold; }
+        .partial { color: #ff9800; font-weight: bold; }
+        .damaged { color: #d32f2f; font-weight: bold; }
+        .button { display: inline-block; background: #4caf50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .quality-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .quality-good { background: #e8f5e8; color: #2e7d32; }
+        .quality-fair { background: #fff3e0; color: #f57c00; }
+        .quality-poor { background: #ffebee; color: #d32f2f; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 የዕቃ ደረሰ ማሳወቂያ / Goods Received Notice</h1>
+            <p>Ethiopian Supply Chain Management System</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{recipientName}},</h2>
+            
+            <div class="success-box">
+                <h3>✅ እቃዎች ተደርሰዋል / Goods Have Been Received</h3>
+                <p>የትዕዛዝ ቁጥር {{purchaseOrderNumber}} ስር ያሉ እቃዎች ወደ {{warehouseName}} መጋዘን ተደርሰዋል።</p>
+                <p>Items from Purchase Order {{purchaseOrderNumber}} have been received at {{warehouseName}} warehouse.</p>
+            </div>
+            
+            <table class="details-table">
+                <tr>
+                    <th>GRV ቁጥር / GRV Number:</th>
+                    <td><strong>{{grvNumber}}</strong></td>
+                </tr>
+                <tr>
+                    <th>የግዢ ትዕዛዝ / Purchase Order:</th>
+                    <td>{{purchaseOrderNumber}}</td>
+                </tr>
+                <tr>
+                    <th>አቅራቢ / Supplier:</th>
+                    <td>{{supplierName}}</td>
+                </tr>
+                <tr>
+                    <th>የደረሰበት ቀን / Received Date:</th>
+                    <td>{{receivedDate}}</td>
+                </tr>
+                <tr>
+                    <th>የተቀበለ / Received By:</th>
+                    <td>{{receivedBy}}</td>
+                </tr>
+                <tr>
+                    <th>መጋዘን / Warehouse:</th>
+                    <td>{{warehouseName}} - {{warehouseLocation}}</td>
+                </tr>
+            </table>
+            
+            <h3>የእቃዎች ዝርዝር / Items Details:</h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th>የእቃ ስም / Item Name</th>
+                        <th>የተጠየቀ / Ordered</th>
+                        <th>የደረሰ / Received</th>
+                        <th>የተጎዳ / Damaged</th>
+                        <th>ጥራት / Quality</th>
+                        <th>ሁኔታ / Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                    <tr>
+                        <td>
+                            <strong>{{itemName}}</strong><br>
+                            <small>SKU: {{sku}} | Batch: {{batchNumber}}</small>
+                        </td>
+                        <td>{{orderedQuantity}} {{unit}}</td>
+                        <td class="received">{{receivedQuantity}} {{unit}}</td>
+                        <td class="{{#if damagedQuantity}}damaged{{else}}received{{/if}}">
+                            {{damagedQuantity}} {{unit}}
+                        </td>
+                        <td>
+                            <span class="quality-badge quality-{{qualityRating}}">
+                                {{qualityGrade}}
+                            </span>
+                        </td>
+                        <td>
+                            {{#if (eq receivedQuantity orderedQuantity)}}
+                                <span class="received">COMPLETE</span>
+                            {{else}}
+                                <span class="partial">PARTIAL</span>
+                            {{/if}}
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h3>📊 የደረሰው ዕቃ ድምር / Received Summary:</h3>
+                <table class="details-table" style="margin: 10px 0;">
+                    <tr>
+                        <td><strong>ጠቅላላ እቃዎች / Total Items:</strong></td>
+                        <td>{{totalItems}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ሙሉ በሙሉ የደረሰ / Fully Received:</strong></td>
+                        <td class="received">{{fullyReceivedItems}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>በከፊል የደረሰ / Partially Received:</strong></td>
+                        <td class="partial">{{partiallyReceivedItems}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የተጎዳ / Damaged:</strong></td>
+                        <td class="damaged">{{totalDamagedItems}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ጠቅላላ ዋጋ / Total Value:</strong></td>
+                        <td><strong>{{totalValue}} ብር (ETB)</strong></td>
+                    </tr>
+                </table>
+            </div>
+            
+            {{#if inspectionNotes}}
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>🔍 የጥራት ምርመራ ማስታወሻ / Quality Inspection Notes:</h4>
+                <p>{{inspectionNotes}}</p>
+            </div>
+            {{/if}}
+            
+            {{#if partiallyReceivedItems}}
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>⚠️ ማስታወሻ / Notice:</h4>
+                <p>{{partiallyReceivedItems}} እቃዎች በከፊል ብቻ ደርሰዋል። የቀሪው ክፍል መላኪያ ከአቅራቢው ጋር ይናገሩ።</p>
+                <p>{{partiallyReceivedItems}} items were partially received. Please coordinate with supplier for remaining quantities.</p>
+            </div>
+            {{/if}}
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{viewGrvUrl}}" class="button">👁️ GRV ዝርዝር መመልከት / View GRV Details</a>
+                <a href="{{printGrvUrl}}" class="button" style="background: #1976d2;">🖨️ GRV ማተም / Print GRV</a>
+                {{#if partiallyReceivedItems}}
+                <a href="{{followUpUrl}}" class="button" style="background: #ff9800;">📞 ክትትል / Follow Up</a>
+                {{/if}}
+            </div>
+            
+            <h3>🔄 የሚቀጥሉ እርምጃዎች / Next Steps:</h3>
+            <ul>
+                <li>✅ እቃዎች ወደ ተገቢው የመጋዘን ቦታ እንዲቀመጡ</li>
+                <li>📋 የክምችት ሪከርድ ማዘመን</li>
+                <li>💰 የአቅራቢ ክፍያ ሂደት መጀመር</li>
+                {{#if partiallyReceivedItems}}
+                <li>📞 ያልደረሰ እቃ ላይ ከአቅራቢው ጋር ተቀናጅቶ መስራት</li>
+                {{/if}}
+                {{#if totalDamagedItems}}
+                <li>🔍 የተጎዳ እቃ ላይ የመመለሻ ወይም የካሳ ጥያቄ</li>
+                {{/if}}
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System - Supply Chain</p>
+            <p>ለበለጠ መረጃ: warehouse@company.et | +251-11-XXX-XXXX</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,130 +1,97 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container,
-  Paper,
+  Box,
   TextField,
   Button,
   Typography,
-  Box,
   Alert,
-  Divider,
-  Grid,
+  Container,
   Card,
   CardContent,
-  CardActions,
-  Chip,
-  Avatar
 } from '@mui/material';
-import { useAuth, DEMO_USERS } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, quickLogin } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
       const success = await login(username, password);
       if (success) {
         navigate('/dashboard');
       } else {
-        setError('Invalid credentials');
+        setError('Invalid username or password');
       }
     } catch (err) {
-      setError('Login failed');
+      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleQuickLogin = async (username: string) => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const success = await quickLogin(username);
-      if (success) {
-        navigate('/dashboard');
-      } else {
-        setError('Quick login failed');
-      }
-    } catch (err) {
-      setError('Login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getRoleColor = (role: string) => {
-    const colors: Record<string, string> = {
-      'SUPER': '#f44336',
-      'Administrator': '#ff9800',
-      'Manager': '#2196f3',
-      'Supervisor': '#4caf50',
-      'Standard User': '#9c27b0',
-      'Read Only': '#607d8b'
-    };
-    return colors[role] || '#607d8b';
-  };
-
-  const getAvatarInitials = (firstName: string, lastName: string) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`;
-  };
-
-  return (
-    <Container maxWidth="md" sx={{ py: 8 }}>
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">
-          ERP System
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Enterprise Resource Planning Solution
-        </Typography>
-      </Box>
-
-      <Grid container spacing={4}>
-        {/* Manual Login Form */}
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 4 }}>
-            <Typography variant="h5" component="h2" gutterBottom textAlign="center">
-              Manual Login
+    const handleUsernameClick = (username: string) => {
+        setUsername(username);
+        setPassword('secret'); // All test users use 'secret' as password
+    };  return (
+    <Container component="main" maxWidth="sm">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Card sx={{ width: '100%', mt: 3 }}>
+          <CardContent sx={{ p: 4 }}>
+            <Typography component="h1" variant="h4" align="center" gutterBottom>
+              Ethiopian ERP System
+            </Typography>
+            <Typography variant="h6" align="center" color="textSecondary" gutterBottom>
+              የኢትዮጵያ ኢንተርፕራይዝ ሪሶርስ ፕላኒንግ
             </Typography>
             
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
+                margin="normal"
+                required
                 fullWidth
+                id="username"
                 label="Username"
+                name="username"
+                autoComplete="username"
+                autoFocus
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                margin="normal"
-                required
-                disabled={loading}
               />
               <TextField
-                fullWidth
-                type="password"
-                label="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 margin="normal"
                 required
-                disabled={loading}
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              
-              {error && (
-                <Alert severity="error" sx={{ mt: 2 }}>
-                  {error}
-                </Alert>
-              )}
-              
               <Button
                 type="submit"
                 fullWidth
@@ -132,112 +99,110 @@ const Login: React.FC = () => {
                 sx={{ mt: 3, mb: 2 }}
                 disabled={loading}
               >
-                {loading ? 'Logging in...' : 'Login'}
+                {loading ? 'Signing In...' : 'Sign In'}
               </Button>
             </Box>
-
-            <Divider sx={{ my: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                Demo Credentials
+            
+            <Box sx={{ mt: 3, p: 2, bgcolor: 'background.default', borderRadius: 1 }}>
+              <Typography variant="body2" color="textSecondary" gutterBottom>
+                Ethiopian ERP System - Comprehensive Business Management
               </Typography>
-            </Divider>
-
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" color="text.secondary">
-                Password for all users: <strong>password</strong>
+              <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+                🔐 Test User Credentials (All users password: <span style={{color: '#1976d2', fontWeight: 'bold'}}>secret</span>)
               </Typography>
+              
+              <Typography variant="caption" color="primary" sx={{ mt: 1, mb: 2, display: 'block', fontStyle: 'italic', fontWeight: 'bold' }}>
+                💡 Click any username below to auto-fill both username and password fields
+              </Typography>
+              
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 1, fontSize: '0.75rem' }}>
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('admin')}
+                >
+                  <Typography variant="caption" color="primary" sx={{ fontWeight: 'bold' }}>
+                    👑 System Admin
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>admin</strong>
+                  </Typography>
+                </Box>
+                
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('inventory_mgr')}
+                >
+                  <Typography variant="caption" color="success.main" sx={{ fontWeight: 'bold' }}>
+                    📦 Inventory Manager
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>inventory_mgr</strong>
+                  </Typography>
+                </Box>
+                
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('purchase_mgr')}
+                >
+                  <Typography variant="caption" color="info.main" sx={{ fontWeight: 'bold' }}>
+                    🛒 Purchase Manager
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>purchase_mgr</strong>
+                  </Typography>
+                </Box>
+                
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('sales_mgr')}
+                >
+                  <Typography variant="caption" color="warning.main" sx={{ fontWeight: 'bold' }}>
+                    💰 Sales Manager
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>sales_mgr</strong>
+                  </Typography>
+                </Box>
+                
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('finance_mgr')}
+                >
+                  <Typography variant="caption" color="secondary.main" sx={{ fontWeight: 'bold' }}>
+                    🏦 Finance Manager
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>finance_mgr</strong>
+                  </Typography>
+                </Box>
+                
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('warehouse_op')}
+                >
+                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'bold' }}>
+                    🏭 Warehouse Operator
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>warehouse_op</strong>
+                  </Typography>
+                </Box>
+                
+                <Box 
+                  sx={{ cursor: 'pointer', p: 1, borderRadius: 1, '&:hover': { bgcolor: 'action.hover' } }}
+                  onClick={() => handleUsernameClick('basic_user')}
+                >
+                  <Typography variant="caption" color="text.primary" sx={{ fontWeight: 'bold' }}>
+                    👤 Basic User
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    Username: <strong>basic_user</strong>
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
-          </Paper>
-        </Grid>
-
-        {/* Quick Access Role Selection */}
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 4 }}>
-            <Typography variant="h5" component="h2" gutterBottom textAlign="center">
-              Quick Access by Role
-            </Typography>
-            <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mb: 3 }}>
-              Click any user card to login instantly and test role-based permissions
-            </Typography>
-
-            <Grid container spacing={2}>
-              {DEMO_USERS.map((user) => (
-                <Grid item xs={12} key={user.id}>
-                  <Card 
-                    variant="outlined" 
-                    sx={{ 
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      '&:hover': {
-                        elevation: 4,
-                        transform: 'translateY(-2px)',
-                        boxShadow: 3
-                      }
-                    }}
-                    onClick={() => handleQuickLogin(user.username)}
-                  >
-                    <CardContent sx={{ pb: 1 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <Avatar 
-                          sx={{ 
-                            mr: 2, 
-                            bgcolor: getRoleColor(user.roles[0]),
-                            width: 40,
-                            height: 40,
-                            fontSize: '0.875rem'
-                          }}
-                        >
-                          {getAvatarInitials(user.firstName, user.lastName)}
-                        </Avatar>
-                        <Box sx={{ flexGrow: 1 }}>
-                          <Typography variant="subtitle1" fontWeight="medium">
-                            {user.firstName} {user.lastName}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {user.jobTitle} • {user.department}
-                          </Typography>
-                        </Box>
-                        <Chip
-                          label={user.roles[0]}
-                          size="small"
-                          sx={{
-                            bgcolor: getRoleColor(user.roles[0]),
-                            color: 'white',
-                            fontWeight: 'medium'
-                          }}
-                        />
-                      </Box>
-                      <Typography variant="caption" color="text.secondary">
-                        @{user.username}
-                      </Typography>
-                    </CardContent>
-                    <CardActions sx={{ pt: 0, pb: 2, px: 2 }}>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        fullWidth
-                        disabled={loading}
-                        sx={{ textTransform: 'none' }}
-                      >
-                        Login as {user.roles[0]}
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
-        </Grid>
-      </Grid>
-
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Typography variant="body2" color="text.secondary">
-          Each role demonstrates different access levels in the Settings section
-        </Typography>
-        <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
-          SUPER has full access • Administrator manages system • Manager handles operations • 
-          Supervisor oversees teams • Standard User has basic access • Read Only can only view
-        </Typography>
+          </CardContent>
+        </Card>
       </Box>
     </Container>
   );

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { SnackbarProvider } from 'notistack';
 import { AuthProvider } from './contexts/AuthContext';
 import { MockDataProvider } from './contexts/MockDataProvider';
+import { PurchaseDataProvider } from './contexts/PurchaseDataProvider';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -17,6 +18,8 @@ import Sales from './pages/Sales/Sales';
 import Reports from './pages/Reports/Reports';
 import Settings from './pages/Settings/Settings';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import AdvancedAnalyticsDashboard from './components/AdvancedAnalyticsDashboard';
+import AdvancedInventoryManagement from './components/AdvancedInventoryManagement';
 import './App.css';
 
 // Create Material-UI theme
@@ -75,32 +78,36 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <SnackbarProvider maxSnack={3}>
-          <AuthProvider>
+                    <AuthProvider>
             <MockDataProvider>
-              <Router>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route
-                    path="/"
-                    element={
-                      <ProtectedRoute>
-                        <Layout />
-                      </ProtectedRoute>
-                    }
-                  >
-                    <Route index element={<Navigate to="/dashboard" replace />} />
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="inventory/*" element={<Inventory />} />
-                    <Route path="purchase/*" element={<Purchase />} />
-                    <Route path="finance/*" element={<Finance />} />
-                    <Route path="logistics/*" element={<Logistics />} />
-                    <Route path="sales/*" element={<Sales />} />
-                    <Route path="reports/*" element={<Reports />} />
-                    <Route path="settings/*" element={<Settings />} />
-                  </Route>
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
-              </Router>
+              <PurchaseDataProvider>
+                <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                      path="/"
+                      element={
+                        <ProtectedRoute>
+                          <Layout />
+                        </ProtectedRoute>
+                      }
+                    >
+                      <Route index element={<Navigate to="/dashboard" replace />} />
+                      <Route path="dashboard" element={<Dashboard />} />
+                      <Route path="analytics" element={<AdvancedAnalyticsDashboard />} />
+                      <Route path="inventory/*" element={<Inventory />} />
+                      <Route path="inventory-advanced" element={<AdvancedInventoryManagement />} />
+                      <Route path="purchase/*" element={<Purchase />} />
+                      <Route path="finance/*" element={<Finance />} />
+                      <Route path="logistics/*" element={<Logistics />} />
+                      <Route path="sales/*" element={<Sales />} />
+                      <Route path="reports/*" element={<Reports />} />
+                      <Route path="settings/*" element={<Settings />} />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                  </Routes>
+                </Router>
+              </PurchaseDataProvider>
             </MockDataProvider>
           </AuthProvider>
         </SnackbarProvider>

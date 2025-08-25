@@ -1,0 +1,61 @@
+# Development Docker Compose for local development
+version: '3.8'
+
+services:
+  # MySQL Database
+  database:
+    image: mysql:8.0
+    container_name: erp-database-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: erp_system
+      MYSQL_USER: erp_user
+      MYSQL_PASSWORD: erp_password
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./implementation/database/mysql_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./implementation/database/02_stored_procedures.sql:/docker-entrypoint-initdb.d/02-procedures.sql
+    networks:
+      - erp-dev-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: erp-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - erp-dev-network
+    volumes:
+      - redis_dev_data:/data
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: erp-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - database
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    ports:
+      - "8082:80"
+    networks:
+      - erp-dev-network
+
+volumes:
+  mysql_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+networks:
+  erp-dev-network:
+    driver: bridge

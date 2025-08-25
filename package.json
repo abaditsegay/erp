@@ -1,0 +1,10 @@
+{
+  "name": "erp-project",
+  "version": "1.0.0",
+  "description": "Ethiopian ERP System",
+  "private": true,
+  "workspaces": [
+    "implementation/frontend",
+    "implementation/backend"
+  ]
+}

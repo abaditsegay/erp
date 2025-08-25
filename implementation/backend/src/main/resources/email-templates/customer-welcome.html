@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Welcome Email</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #1976d2, #42a5f5); color: white; padding: 40px; text-align: center; position: relative; }
+        .header::before { content: '🇪🇹'; position: absolute; top: 20px; right: 20px; font-size: 30px; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .content { padding: 30px; }
+        .welcome-box { background: linear-gradient(45deg, #e3f2fd, #f0f7ff); padding: 25px; border-radius: 8px; margin: 25px 0; text-align: center; }
+        .company-info { background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .services-grid { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; }
+        .service-item { flex: 1; min-width: 250px; background: #f9f9f9; padding: 15px; border-radius: 6px; border-left: 4px solid #1976d2; }
+        .contact-card { background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .button { display: inline-block; background: #1976d2; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .button.secondary { background: #4caf50; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .ethiopian-greeting { background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; padding: 15px; border-radius: 6px; margin: 15px 0; text-align: center; }
+        .business-hours { background: #fff3e0; padding: 15px; border-radius: 6px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>እንኳን ደህና መጡ! / Welcome!</h1>
+            <p>{{companyName}} የንግድ አጋር ሆኑ</p>
+            <p>You've joined the {{companyName}} business family</p>
+        </div>
+        
+        <div class="content">
+            <div class="ethiopian-greeting">
+                <h2>🎉 ተመርቀዋል! እንኳን ወደ ቤተሰባችን በደህና መጡ!</h2>
+                <h3>Congratulations! Welcome to our business family!</h3>
+            </div>
+            
+            <h2>ውድ {{customerName}},</h2>
+            
+            <div class="welcome-box">
+                <h3>🌟 በ{{companyName}} ላይ የንግድ መለያዎን መዝግበዋል!</h3>
+                <h4>Your business account with {{companyName}} has been successfully created!</h4>
+                <p>በኢትዮጵያ ውስጥ ግንባር ቀደም የንግድ አቅራቢዎች መካከል ይገኛሉ። ለራሳቸው ባለሙያ አገልግሎታችን እንኳን ደህና መጡ!</p>
+                <p>You are now part of Ethiopia's leading business service providers. Welcome to our professional services!</p>
+            </div>
+            
+            <div class="company-info">
+                <h3>🏢 ስለ ድርጅታችን / About Our Company:</h3>
+                <p><strong>{{companyName}}</strong> በኢትዮጵያ {{establishedYear}} ዓመት የተመሰረተ ሲሆን፣ በንግድ አስተዳደር፣ ማቅረቢያ እና የፋይናንስ አገልግሎቶች ላይ ልሙን ነው።</p>
+                <p><strong>{{companyName}}</strong> was established in Ethiopia in {{establishedYear}}, specializing in business management, supply, and financial services.</p>
+                
+                <ul>
+                    <li>✅ በ{{yearsOfExperience}}+ ዓመታት ልምድ / {{yearsOfExperience}}+ years of experience</li>
+                    <li>✅ በ{{numberOfCustomers}}+ የተደሰቱ ደንበኞች / {{numberOfCustomers}}+ satisfied customers</li>
+                    <li>✅ በሀገር አቀፍ ደረጃ አገልግሎት / Nationwide service coverage</li>
+                    <li>✅ ISO 9001:2015 የተረጋገጠ ጥራት / ISO 9001:2015 certified quality</li>
+                </ul>
+            </div>
+            
+            <h3>🎯 የእኛ አገልግሎቶች / Our Services:</h3>
+            <div class="services-grid">
+                <div class="service-item">
+                    <h4>🛍️ ንግድ እና ሽያጭ</h4>
+                    <h5>Business & Sales</h5>
+                    <p>የተለያዩ የንግድ ምርቶች እና አገልግሎቶች</p>
+                    <p>Various business products and services</p>
+                </div>
+                <div class="service-item">
+                    <h4>📦 ሎጂስቲክስ</h4>
+                    <h5>Logistics Services</h5>
+                    <p>አገር አቀፍ ማጓጓዣ እና አቅርቦት</p>
+                    <p>Nationwide transportation and supply</p>
+                </div>
+                <div class="service-item">
+                    <h4>💰 የፋይናንስ አገልግሎቶች</h4>
+                    <h5>Financial Services</h5>
+                    <p>የክፍያ እና የፋይናንስ አማሳለጆች</p>
+                    <p>Payment and financial solutions</p>
+                </div>
+                <div class="service-item">
+                    <h4>🔧 ቴክኒካል ድጋፍ</h4>
+                    <h5>Technical Support</h5>
+                    <p>24/7 የደንበኞች አገልግሎት</p>
+                    <p>24/7 customer support</p>
+                </div>
+            </div>
+            
+            <h3>👤 የመለያዎ መረጃ / Your Account Information:</h3>
+            <div style="background: #e3f2fd; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <table style="width: 100%; font-size: 14px;">
+                    <tr>
+                        <td><strong>የደንበኛ መታወቂያ / Customer ID:</strong></td>
+                        <td>{{customerId}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የመለያ አይነት / Account Type:</strong></td>
+                        <td>{{accountType}} / {{accountTypeEn}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የተመዝገበበት ቀን / Registration Date:</strong></td>
+                        <td>{{registrationDate}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የሽያጭ ወኪል / Assigned Sales Rep:</strong></td>
+                        <td>{{salesRepName}} - {{salesRepPhone}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የክፍያ ሁኔታ / Payment Terms:</strong></td>
+                        <td>{{paymentTerms}}</td>
+                    </tr>
+                    {{#if creditLimit}}
+                    <tr>
+                        <td><strong>የብድር ገደብ / Credit Limit:</strong></td>
+                        <td>{{creditLimit}} ብር</td>
+                    </tr>
+                    {{/if}}
+                </table>
+            </div>
+            
+            <h3>🚀 ቀጣይ እርምጃዎች / Next Steps:</h3>
+            <div style="background: #fff3e0; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <ol>
+                    <li><strong>የመለያዎን ያወሱ / Activate Your Account:</strong>
+                        <br>ቀደም ሲል በኢሜይል የተላከላቸውን የመልሶ ማሰመሪያ ሊንክ ይጫኑ
+                        <br>Click the activation link sent to your email earlier
+                    </li>
+                    <li><strong>የመጀመሪያ ትዕዛዝዎን ያግዙ / Place Your First Order:</strong>
+                        <br>ለመጀመሪያ ግዢዎ 10% ቅናሽ ያግኙ
+                        <br>Get 10% discount on your first purchase
+                    </li>
+                    <li><strong>የደንበኞች መርሃ ግብር ላይ ይመዝገቡ / Join Customer Program:</strong>
+                        <br>ልዩ ቅናሾች እና ወላጅ ጥቅሞች ያግኙ
+                        <br>Access exclusive discounts and premium benefits
+                    </li>
+                </ol>
+            </div>
+            
+            <div class="contact-card">
+                <h3>📞 የግንኙነት መረጃ / Contact Information:</h3>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="flex: 1; margin-right: 20px;">
+                        <h4>🏢 ዋና መ/ቤት / Head Office:</h4>
+                        <p>{{headOfficeAddress}}</p>
+                        <p>አዲስ አበባ፣ ኢትዮጵያ</p>
+                        <p>Addis Ababa, Ethiopia</p>
+                        <p><strong>ስልክ / Phone:</strong> {{mainPhoneNumber}}</p>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>👥 የደንበኞች አገልግሎት / Customer Service:</h4>
+                        <p><strong>ስልክ / Phone:</strong> {{customerServicePhone}}</p>
+                        <p><strong>ኢሜይል / Email:</strong> {{customerServiceEmail}}</p>
+                        <p><strong>WhatsApp:</strong> {{whatsappNumber}}</p>
+                        <p><strong>የሽያጭ ወኪልዎ / Your Sales Rep:</strong> {{salesRepName}}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="business-hours">
+                <h4>🕐 የስራ ሰዓታት / Business Hours:</h4>
+                <ul style="margin: 0;">
+                    <li><strong>ሰኞ - ዓርብ / Monday - Friday:</strong> 8:00 ጠ.ሰ - 6:00 ማ.ሰ / 8:00 AM - 6:00 PM</li>
+                    <li><strong>ቅዳሜ / Saturday:</strong> 8:00 ጠ.ሰ - 2:00 ማ.ሰ / 8:00 AM - 2:00 PM</li>
+                    <li><strong>እሁድ / Sunday:</strong> ዝግ / Closed</li>
+                    <li><strong>የአደጋ ጊዜ ስልክ / Emergency Contact:</strong> {{emergencyPhone}} (24/7)</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{activationUrl}}" class="button">🔓 መለያ ማስመሪያ / Activate Account</a>
+                <a href="{{catalogUrl}}" class="button secondary">📋 ምርቶች ይመልከቱ / View Catalog</a>
+                <a href="{{supportUrl}}" class="button" style="background: #ff9800;">💬 ድጋፍ / Get Support</a>
+            </div>
+            
+            <h3>🎁 የመጀመሪያ ደንበኛ ጥቅሞች / New Customer Benefits:</h3>
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <ul>
+                    <li>💰 በመጀመሪያ ግዢዎ ላይ 10% ቅናሽ</li>
+                    <li>💰 10% discount on your first purchase</li>
+                    <li>🚚 ነፃ የማጓጓዣ አገልግሎት (በአዲስ አበባ ውስጥ)</li>
+                    <li>🚚 Free delivery service (within Addis Ababa)</li>
+                    <li>📞 ስለ ምርቶች ነፃ ምክር</li>
+                    <li>📞 Free product consultation</li>
+                    <li>🔧 ለ6 ወራት ነፃ ቴክኒካል ድጋፍ</li>
+                    <li>🔧 6 months of free technical support</li>
+                    <li>📈 ቅድሚያ የሚሰጥ የንግድ ምክር</li>
+                    <li>📈 Priority business consultation</li>
+                </ul>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>🔒 የደህንነት ምክሮች / Security Tips:</h4>
+                <ul>
+                    <li>የመለያዎን ሚስጥራዊ ቃል ለሌላ ሰው አያጋሩ</li>
+                    <li>Never share your account password with others</li>
+                    <li>ወደ መለያዎ ዝርዝር መረጃ የሚጠይቁ የ phishing ኢሜይሎችን ተጠንቀቁ</li>
+                    <li>Beware of phishing emails asking for account details</li>
+                    <li>የሚጠራጠሩት እንቅስቃሴዎች ካሉ ወዲያውኑ ያሳውቁን</li>
+                    <li>Report any suspicious activities immediately</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System - Customer Relations</p>
+            <p>እንደገና እንኳን ወደ ቤተሰባችን በደህና መጡ! / Welcome to our family once again!</p>
+            <p style="margin-top: 10px;">
+                <strong>ለማንኛውም ጥያቄ፣ </strong>{{customerServiceEmail}} ላይ ወይም {{customerServicePhone}} ላይ ይደውሉ
+            </p>
+            <p>
+                <strong>For any questions,</strong> email {{customerServiceEmail}} or call {{customerServicePhone}}
+            </p>
+        </div>
+    </div>
+</body>
+</html>

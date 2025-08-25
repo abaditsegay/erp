@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Acknowledgment</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #4caf50, #66bb6a); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .acknowledgment-box { background: #e8f5e8; border-left: 4px solid #4caf50; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .job-details { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .timeline { position: relative; padding: 20px 0; }
+        .timeline-item { display: flex; align-items: center; margin: 15px 0; }
+        .timeline-icon { width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; color: white; }
+        .completed { background: #4caf50; }
+        .current { background: #ff9800; }
+        .upcoming { background: #e0e0e0; color: #666; }
+        .button { display: inline-block; background: #4caf50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .requirements-box { background: #fff3e0; padding: 15px; border-radius: 6px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 የስራ ማመልከቻ ደረሰኝ / Job Application Received</h1>
+            <p>Ethiopian Human Resources Recruitment</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{applicantName}},</h2>
+            
+            <div class="acknowledgment-box">
+                <h3>✅ የስራ ማመልከቻዎ ተቀብሎ ተረጋግጧል!</h3>
+                <h4>Your job application has been successfully received!</h4>
+                <p>ለ{{companyName}} ላይ የሚቀርበው {{jobTitle}} ቦታ ላይ ያላቸው ፍላጎት አመሰግናለን።</p>
+                <p>Thank you for your interest in the {{jobTitle}} position at {{companyName}}.</p>
+            </div>
+            
+            <div class="job-details">
+                <h3>📋 የስራ ቦታ ዝርዝር / Job Position Details:</h3>
+                <table class="details-table">
+                    <tr>
+                        <th>የስራ ቦታ / Job Title:</th>
+                        <td><strong>{{jobTitle}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የመምሪያ / Department:</th>
+                        <td>{{department}}</td>
+                    </tr>
+                    <tr>
+                        <th>የስራ ዓይነት / Job Type:</th>
+                        <td>{{jobType}} / {{jobTypeEn}}</td>
+                    </tr>
+                    <tr>
+                        <th>የስራ ሰዓት / Working Hours:</th>
+                        <td>{{workingHours}}</td>
+                    </tr>
+                    <tr>
+                        <th>የስራ ቦታ / Location:</th>
+                        <td>{{jobLocation}}</td>
+                    </tr>
+                    <tr>
+                        <th>የማመልከቻ ቀን / Application Date:</th>
+                        <td>{{applicationDate}}</td>
+                    </tr>
+                    <tr>
+                        <th>የማመልከቻ ቁጥር / Application ID:</th>
+                        <td><strong>{{applicationId}}</strong></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h3>📄 የተገለጹ ሰነዶች / Submitted Documents:</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <ul>
+                    {{#each documents}}
+                    <li>
+                        <span style="color: {{#if received}}#4caf50{{else}}#f44336{{/if}};">
+                            {{#if received}}✅{{else}}❌{{/if}}
+                        </span>
+                        {{documentName}} / {{documentNameEn}}
+                        {{#unless received}}
+                        <small style="color: #f44336;"> - ያልተገለጸ / Missing</small>
+                        {{/unless}}
+                    </li>
+                    {{/each}}
+                </ul>
+                
+                {{#if missingDocuments}}
+                <div class="requirements-box">
+                    <h4>⚠️ ተጨማሪ ሰነዶች ያስፈልጋሉ / Additional Documents Required:</h4>
+                    <p>እባክዎ የሚከተሉት ሰነዶችን በኢሜይል ያስገቡ:</p>
+                    <p>Please submit the following documents via email:</p>
+                    <ul>
+                        {{#each missingDocuments}}
+                        <li>{{this}}</li>
+                        {{/each}}
+                    </ul>
+                    <p><strong>ወደ ኢሜይል ያስገቡ / Submit to:</strong> hr-recruitment@company.et</p>
+                </div>
+                {{/if}}
+            </div>
+            
+            <h3>🗓️ የምልመላ ሂደት / Recruitment Process Timeline:</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon completed">✓</div>
+                    <div>
+                        <strong>ማመልከቻ ደረሰኝ / Application Received</strong><br>
+                        <small>{{applicationDate}} - ተጠናቀቀ / Completed</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon {{documentReviewStatus}}">📋</div>
+                    <div>
+                        <strong>ሰነድ ግምገማ / Document Review</strong><br>
+                        <small>{{documentReviewDate}} - {{documentReviewStatusText}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon upcoming">📞</div>
+                    <div>
+                        <strong>ቅድመ ቃለ መጠይቅ / Preliminary Interview</strong><br>
+                        <small>{{preliminaryInterviewDate}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon upcoming">🎯</div>
+                    <div>
+                        <strong>የቴክኒክ ፈተና / Technical Assessment</strong><br>
+                        <small>{{technicalAssessmentDate}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon upcoming">👥</div>
+                    <div>
+                        <strong>የመጨረሻ ቃለ መጠይቅ / Final Interview</strong><br>
+                        <small>{{finalInterviewDate}}</small>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon upcoming">📧</div>
+                    <div>
+                        <strong>የመጨረሻ ውሳኔ / Final Decision</strong><br>
+                        <small>{{finalDecisionDate}}</small>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>📋 የስራ መፈልገ ሁኔታዎች / Job Requirements:</h3>
+            <div style="background: #e3f2fd; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h4>የትምህርት ደረጃ / Education Requirements:</h4>
+                <ul>
+                    {{#each educationRequirements}}
+                    <li>{{requirement}} / {{requirementEn}}</li>
+                    {{/each}}
+                </ul>
+                
+                <h4>የስራ ልምድ / Experience Requirements:</h4>
+                <ul>
+                    {{#each experienceRequirements}}
+                    <li>{{requirement}} / {{requirementEn}}</li>
+                    {{/each}}
+                </ul>
+                
+                <h4>ልዩ ችሎታዎች / Special Skills:</h4>
+                <ul>
+                    {{#each skillRequirements}}
+                    <li>{{skill}} - {{level}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            
+            <h3>💰 የደመወዝ እና ጥቅሞች / Salary and Benefits:</h3>
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <table class="details-table">
+                    <tr>
+                        <td><strong>የደመወዝ ክልል / Salary Range:</strong></td>
+                        <td>{{salaryRange}} ብር በወር</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የቤት ድጋፍ / Housing Allowance:</strong></td>
+                        <td>{{housingAllowance}} ብር</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የመኪና ድጋፍ / Transport Allowance:</strong></td>
+                        <td>{{transportAllowance}} ብር</td>
+                    </tr>
+                    <tr>
+                        <td><strong>የጤና ኢንሹራንስ / Health Insurance:</strong></td>
+                        <td>{{healthInsurance}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ዓመታዊ ፈቃድ / Annual Leave:</strong></td>
+                        <td>{{annualLeave}} ቀናት</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ሌሎች ጥቅሞች / Other Benefits:</strong></td>
+                        <td>{{otherBenefits}}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h3>📞 የቃለ መጠይቅ ዝግጅት / Interview Preparation:</h3>
+                <ul>
+                    <li>የቃለ መጠይቁ በ{{interviewLanguage}} ይካሄዳል</li>
+                    <li>Interview will be conducted in {{interviewLanguage}}</li>
+                    <li>የድርጅቱን የስራ ባህል እና እሴቶች ይመልከቱ</li>
+                    <li>Research company culture and values</li>
+                    <li>ለቴክኒካል ጥያቄዎች ዝግጁ ይሁኑ</li>
+                    <li>Be prepared for technical questions</li>
+                    <li>የግል ምሳሌዎችን ያዘጋጁ</li>
+                    <li>Prepare personal examples and achievements</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{applicationStatusUrl}}" class="button">📊 ማመልከቻ ሁኔታ / Check Application Status</a>
+                <a href="{{documentUploadUrl}}" class="button" style="background: #2196f3;">📄 ሰነድ መላክ / Upload Documents</a>
+                <a href="{{companyInfoUrl}}" class="button" style="background: #ff9800;">🏢 ስለ ድርጅቱ / About Company</a>
+            </div>
+            
+            <h3>📞 የግንኙነት መረጃ / Contact Information:</h3>
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="flex: 1; margin-right: 20px;">
+                        <h4>👥 HR ቡድን / HR Team:</h4>
+                        <p><strong>የስራ ሰጪ ኮዲኔተር / Recruitment Coordinator:</strong><br>
+                           {{recruitmentCoordinator}}</p>
+                        <p><strong>ስልክ / Phone:</strong> {{hrPhone}}</p>
+                        <p><strong>ኢሜይል / Email:</strong> {{hrEmail}}</p>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>🏢 ዋና መ/ቤት / Head Office:</h4>
+                        <p>{{officeAddress}}</p>
+                        <p>አዲስ አበባ፣ ኢትዮጵያ</p>
+                        <p><strong>የመሬት መስመር / Landline:</strong> {{officePhone}}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>⏰ ጠቃሚ ቀናት / Important Dates:</h4>
+                <ul>
+                    <li><strong>የሰነድ ግምገማ ማጠናቀቂያ:</strong> {{documentReviewDeadline}}</li>
+                    <li><strong>Document review completion:</strong> {{documentReviewDeadline}}</li>
+                    <li><strong>የቅድመ ቃለ መጠይቅ:</strong> {{preliminaryInterviewDate}}</li>
+                    <li><strong>Preliminary interview:</strong> {{preliminaryInterviewDate}}</li>
+                    <li><strong>የመጨረሻ ውሳኔ:</strong> {{finalDecisionDate}}</li>
+                    <li><strong>Final decision:</strong> {{finalDecisionDate}}</li>
+                </ul>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>🔒 ሚስጥራዊነት ማስታወሻ / Confidentiality Notice:</h4>
+                <p>የመለያዎ ቁጥር {{applicationId}} ን በማንኛውም ግንኙነት ይጠቀሙ።</p>
+                <p>Please use your application ID {{applicationId}} in all communications.</p>
+                <p>ይህ ማመልከቻ በሚስጥር ይተዳደራል።</p>
+                <p>This application will be handled confidentially.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ሰው ሃይል ምልመላ ስርዓት</p>
+            <p>Ethiopian Human Resources Recruitment System</p>
+            <p>በምልመላ ሂደቱ ላይ ሙሉ ትብብርዎን እንጠይቃለን / We appreciate your cooperation during the recruitment process</p>
+            <p style="margin-top: 10px;">
+                <strong>ለማንኛውም ጥያቄ፣ </strong>{{hrEmail}} ላይ ወይም {{hrPhone}} ላይ ይደውሉ
+            </p>
+        </div>
+    </div>
+</body>
+</html>

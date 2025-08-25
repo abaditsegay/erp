@@ -27,6 +27,8 @@ import {
   Logout as LogoutIcon,
   AccountBalance as FinanceIcon,
   LocalShipping as LogisticsIcon,
+  Analytics as AnalyticsIcon,
+  InventoryRounded as AdvancedInventoryIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -52,7 +54,9 @@ const Layout: React.FC = () => {
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', key: 'dashboard' },
+    { text: 'Advanced Analytics', icon: <AnalyticsIcon />, path: '/analytics', key: 'analytics' },
     { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory', key: 'inventory' },
+    { text: 'Advanced Inventory', icon: <AdvancedInventoryIcon />, path: '/inventory-advanced', key: 'inventory_advanced' },
     { text: 'Purchase', icon: <PurchaseIcon />, path: '/purchase', key: 'purchase' },
     { text: 'Finance', icon: <FinanceIcon />, path: '/finance', key: 'finance' },
     { text: 'Logistics', icon: <LogisticsIcon />, path: '/logistics', key: 'logistics' },

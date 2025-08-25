@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Performance Review</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 650px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #673ab7, #9c27b0); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .performance-summary { background: #f3e5f5; border-left: 4px solid #673ab7; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .vendor-info { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .score-excellent { color: #4caf50; font-weight: bold; }
+        .score-good { color: #ff9800; font-weight: bold; }
+        .score-poor { color: #f44336; font-weight: bold; }
+        .rating-bar { width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; position: relative; }
+        .rating-fill { height: 100%; border-radius: 10px; }
+        .rating-excellent { background: #4caf50; }
+        .rating-good { background: #ff9800; }
+        .rating-poor { background: #f44336; }
+        .button { display: inline-block; background: #673ab7; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .improvement-areas { background: #fff3e0; padding: 15px; border-radius: 6px; margin: 15px 0; }
+        .kpi-grid { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; }
+        .kpi-item { flex: 1; min-width: 200px; background: #f9f9f9; padding: 15px; border-radius: 6px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 የአቅራቢ አፈጻጸም ግምገማ / Vendor Performance Review</h1>
+            <p>Ethiopian Supplier Management System</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{vendorName}},</h2>
+            
+            <div class="performance-summary">
+                <h3>📈 የአፈጻጸም ማጠቃለያ / Performance Summary</h3>
+                <p>የእርስዎ ጠቅላላ የአፈጻጸም ነጥብ: <strong class="score-{{overallRatingClass}}">{{overallScore}}/100</strong></p>
+                <p>Your overall performance score: <strong class="score-{{overallRatingClass}}">{{overallScore}}/100</strong></p>
+                <p><strong>የግምገማ ወቅት / Review Period:</strong> {{reviewPeriod}}</p>
+                <p><strong>የግምገማ ቀን / Review Date:</strong> {{reviewDate}}</p>
+            </div>
+            
+            <div class="vendor-info">
+                <h3>🏢 የአቅራቢ መረጃ / Vendor Information:</h3>
+                <table class="details-table">
+                    <tr>
+                        <th>የአቅራቢ ስም / Vendor Name:</th>
+                        <td>{{vendorName}}</td>
+                    </tr>
+                    <tr>
+                        <th>የአቅራቢ መታወቂያ / Vendor ID:</th>
+                        <td><strong>{{vendorId}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የምርት ዓይነት / Product Category:</th>
+                        <td>{{productCategory}}</td>
+                    </tr>
+                    <tr>
+                        <th>የግንኙነት ሰው / Contact Person:</th>
+                        <td>{{contactPerson}}</td>
+                    </tr>
+                    <tr>
+                        <th>ስልክ / Phone:</th>
+                        <td>{{phone}}</td>
+                    </tr>
+                    <tr>
+                        <th>የሽርክና ጊዜ / Partnership Duration:</th>
+                        <td>{{partnershipDuration}}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h3>🎯 ዋና የአፈጻጸም ምልክቶች / Key Performance Indicators (KPIs):</h3>
+            <div class="kpi-grid">
+                {{#each kpis}}
+                <div class="kpi-item">
+                    <h4>{{kpiName}}</h4>
+                    <div class="rating-bar">
+                        <div class="rating-fill rating-{{ratingClass}}" style="width: {{percentage}}%;"></div>
+                    </div>
+                    <p><strong>{{score}}/100</strong></p>
+                    <small>{{description}}</small>
+                </div>
+                {{/each}}
+            </div>
+            
+            <h3>📊 ዝርዝር የአፈጻጸም ግምገማ / Detailed Performance Assessment:</h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th>የግምገማ መስፈርት / Assessment Criteria</th>
+                        <th>ጠበቃ / Target</th>
+                        <th>ተጨባጭ / Actual</th>
+                        <th>ነጥብ / Score</th>
+                        <th>ደረጃ / Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each assessmentCriteria}}
+                    <tr>
+                        <td><strong>{{criteriaName}}</strong><br><small>{{description}}</small></td>
+                        <td>{{target}}</td>
+                        <td>{{actual}}</td>
+                        <td class="score-{{ratingClass}}">{{score}}/100</td>
+                        <td class="score-{{ratingClass}}">{{rating}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <h3>📈 የማቅረቢያ ስታቲስቲክስ / Delivery Statistics:</h3>
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="flex: 1; margin-right: 15px;">
+                        <h4>📦 የማቅረቢያ አፈጻጸም / Delivery Performance:</h4>
+                        <ul>
+                            <li><strong>ጠቅላላ ትዕዛዞች:</strong> {{totalOrders}}</li>
+                            <li><strong>Total orders:</strong> {{totalOrders}}</li>
+                            <li><strong>በወቅቱ የደረሱ:</strong> {{onTimeDeliveries}} ({{onTimePercentage}}%)</li>
+                            <li><strong>On-time deliveries:</strong> {{onTimeDeliveries}} ({{onTimePercentage}}%)</li>
+                            <li><strong>የዘገዩ:</strong> {{lateDeliveries}} ({{latePercentage}}%)</li>
+                            <li><strong>Late deliveries:</strong> {{lateDeliveries}} ({{latePercentage}}%)</li>
+                        </ul>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>💰 የዋጋ ተወዳዳሪነት / Price Competitiveness:</h4>
+                        <ul>
+                            <li><strong>አማካይ ዋጋ ልዩነት:</strong> {{averagePriceDifference}}%</li>
+                            <li><strong>Average price variance:</strong> {{averagePriceDifference}}%</li>
+                            <li><strong>የወጪ ቁጠባ:</strong> {{costSavings}} ብር</li>
+                            <li><strong>Cost savings:</strong> {{costSavings}} ETB</li>
+                            <li><strong>የዋጋ ስትራቴጂ:</strong> {{pricingStrategy}}</li>
+                            <li><strong>Pricing strategy:</strong> {{pricingStrategy}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>🔍 የጥራት ግምገማ / Quality Assessment:</h3>
+            <table class="details-table">
+                <tr>
+                    <th>የጥራት ደረጃ / Quality Score:</th>
+                    <td class="score-{{qualityRatingClass}}">{{qualityScore}}/100</td>
+                </tr>
+                <tr>
+                    <th>ጉድለት መጠን / Defect Rate:</th>
+                    <td>{{defectRate}}%</td>
+                </tr>
+                <tr>
+                    <th>የደንበኛ ቅሬታዎች / Customer Complaints:</th>
+                    <td>{{customerComplaints}}</td>
+                </tr>
+                <tr>
+                    <th>የመመላሻ መጠን / Return Rate:</th>
+                    <td>{{returnRate}}%</td>
+                </tr>
+                <tr>
+                    <th>የዋስትና ጥያቄዎች / Warranty Claims:</th>
+                    <td>{{warrantyClaims}}</td>
+                </tr>
+            </table>
+            
+            <h3>💬 የደንበኛ አስተያየት / Customer Feedback:</h3>
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                {{#each customerFeedback}}
+                <div style="margin: 15px 0; padding: 10px; background: white; border-radius: 4px;">
+                    <p><strong>{{category}}:</strong> {{feedback}}</p>
+                    <small><strong>ነጥብ:</strong> {{rating}}/5 ⭐ | <strong>ቀን:</strong> {{date}}</small>
+                </div>
+                {{/each}}
+            </div>
+            
+            <h3>🏆 የተሻሉ ጎኖች / Strengths:</h3>
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <ul>
+                    {{#each strengths}}
+                    <li>{{strength}} / {{strengthEn}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            
+            <div class="improvement-areas">
+                <h3>🔧 የማሻሻያ እንቅስቃሴዎች / Areas for Improvement:</h3>
+                <ul>
+                    {{#each improvementAreas}}
+                    <li><strong>{{area}}:</strong> {{recommendation}}</li>
+                    <li><strong>{{areaEn}}:</strong> {{recommendationEn}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            
+            <h3>📅 የተሻሻሉ ዕቅዶች / Improvement Plans:</h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th>የማሻሻያ አካባቢ / Improvement Area</th>
+                        <th>የታቀደ እርምጃ / Planned Action</th>
+                        <th>የጊዜ ሰላሳ / Timeline</th>
+                        <th>ሃላፊ / Responsible</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each improvementPlans}}
+                    <tr>
+                        <td>{{area}}</td>
+                        <td>{{action}}</td>
+                        <td>{{timeline}}</td>
+                        <td>{{responsible}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <h3>🎯 የቀጣይ ወቅት ግቦች / Next Period Goals:</h3>
+            <div style="background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <ul>
+                    {{#each nextPeriodGoals}}
+                    <li><strong>{{goalCategory}}:</strong> {{goal}} / {{goalEn}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            
+            <h3>💳 የክፍያ እና የስምምነት ሁኔታ / Payment and Contract Status:</h3>
+            <table class="details-table">
+                <tr>
+                    <th>የስምምነት ሁኔታ / Contract Status:</th>
+                    <td>{{contractStatus}} / {{contractStatusEn}}</td>
+                </tr>
+                <tr>
+                    <th>የስምምነት ማብቂያ / Contract Expiry:</th>
+                    <td>{{contractExpiryDate}}</td>
+                </tr>
+                <tr>
+                    <th>የክፍያ ሁኔታ / Payment Terms:</th>
+                    <td>{{paymentTerms}}</td>
+                </tr>
+                <tr>
+                    <th>አማካይ የክፍያ ጊዜ / Average Payment Time:</th>
+                    <td>{{averagePaymentTime}} ቀናት</td>
+                </tr>
+                <tr>
+                    <th>ያልተከፈሉ ደረሰኞች / Outstanding Invoices:</th>
+                    <td>{{outstandingInvoices}} - {{outstandingAmount}} ብር</td>
+                </tr>
+            </table>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{discussionMeetingUrl}}" class="button">📅 ውይይት ሰሰ / Schedule Discussion</a>
+                <a href="{{improvementPlanUrl}}" class="button" style="background: #4caf50;">📋 የማሻሻያ ዕቅድ / Improvement Plan</a>
+                <a href="{{contractRenewalUrl}}" class="button" style="background: #ff9800;">📄 ስምምነት ዕድሳት / Contract Renewal</a>
+            </div>
+            
+            <h3>📞 የግንኙነት መረጃ / Contact Information:</h3>
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="flex: 1; margin-right: 20px;">
+                        <h4>🏢 የግዢ መምሪያ / Procurement Department:</h4>
+                        <p><strong>የግዢ ኃላፊ / Procurement Manager:</strong><br>
+                           {{procurementManager}}</p>
+                        <p><strong>ስልክ / Phone:</strong> {{procurementPhone}}</p>
+                        <p><strong>ኢሜይል / Email:</strong> {{procurementEmail}}</p>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>👥 የአቅራቢ ግንኙነት / Supplier Relations:</h4>
+                        <p><strong>ግንኙነት ኃላፊ / Relations Manager:</strong><br>
+                           {{supplierRelationsManager}}</p>
+                        <p><strong>ስልክ / Phone:</strong> {{supplierRelationsPhone}}</p>
+                        <p><strong>ኢሜይል / Email:</strong> {{supplierRelationsEmail}}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📝 የቀጣይ እርምጃዎች / Next Steps:</h4>
+                <ol>
+                    <li>ይህንን ሪፖርት መልሰው ይመልከቱ እና የማሻሻያ አካባቢዎችን ያስታውሱ</li>
+                    <li>Review this report and note areas for improvement</li>
+                    <li>የማሻሻያ ዕቅድ ይዘጋጁ እና በ{{improvementPlanDeadline}} ያስመዝግቡ</li>
+                    <li>Prepare improvement plan and submit by {{improvementPlanDeadline}}</li>
+                    <li>ከግዢ ቡድናችን ጋር ምክክር ይመድቡ</li>
+                    <li>Schedule consultation meeting with our procurement team</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ የአቅራቢ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Supplier Management System - Vendor Relations</p>
+            <p>የግምገማ ቁጥር / Review ID: {{reviewId}} | ቀን / Date: {{reviewDate}}</p>
+            <p>ለበለጠ መረጃ የግዢ መምሪያን ያነጋግሩ / Contact Procurement Department for more information</p>
+        </div>
+    </div>
+</body>
+</html>

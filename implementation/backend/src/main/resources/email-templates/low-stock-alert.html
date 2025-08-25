@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Stock Alert</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #ff9800, #ffc107); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .alert-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .item-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .item-table th, .item-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .item-table th { background-color: #f8f9fa; font-weight: 600; }
+        .critical { color: #d32f2f; font-weight: bold; }
+        .low { color: #ff9800; font-weight: bold; }
+        .button { display: inline-block; background: #ff9800; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .progress-bar { background: #e0e0e0; height: 10px; border-radius: 5px; overflow: hidden; margin: 5px 0; }
+        .progress-fill { height: 100%; transition: width 0.3s ease; }
+        .progress-critical { background: #d32f2f; }
+        .progress-low { background: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ የእቃ እጥረት ማሳወቂያ / Low Stock Alert</h1>
+            <p>Ethiopian Inventory Management System</p>
+        </div>
+        
+        <div class="content">
+            <h2>ጤና ይስጥልኝ {{managerName}},</h2>
+            
+            <div class="alert-box">
+                <h3>🚨 አስቸኳይ እርምጃ ያስፈልጋል / Urgent Action Required</h3>
+                <p>የሚከተሉት እቃዎች ዝቅተኛ ወይም ወሳኝ ደረጃ ላይ ደርሰዋል።</p>
+                <p>The following items have reached low or critical stock levels.</p>
+            </div>
+            
+            <h3>🔥 ወሳኝ እጥረት / Critical Stock ({{criticalCount}} ዕቃዎች):</h3>
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th>የእቃ ስም / Item Name</th>
+                        <th>SKU</th>
+                        <th>አሁን ያለ / Current</th>
+                        <th>ዝቅተኛ ደረጃ / Min Level</th>
+                        <th>መጋዘን / Warehouse</th>
+                        <th>ሁኔታ / Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each criticalItems}}
+                    <tr>
+                        <td><strong>{{itemName}}</strong><br><small>{{category}}</small></td>
+                        <td>{{sku}}</td>
+                        <td class="critical">{{currentStock}} {{unit}}</td>
+                        <td>{{minLevel}} {{unit}}</td>
+                        <td>{{warehouseName}}</td>
+                        <td>
+                            <span class="critical">CRITICAL</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-critical" style="width: {{stockPercentage}}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <h3>⚠️ ዝቅተኛ እጥረት / Low Stock ({{lowCount}} ዕቃዎች):</h3>
+            <table class="item-table">
+                <thead>
+                    <tr>
+                        <th>የእቃ ስም / Item Name</th>
+                        <th>SKU</th>
+                        <th>አሁን ያለ / Current</th>
+                        <th>ዝቅተኛ ደረጃ / Min Level</th>
+                        <th>መጋዘን / Warehouse</th>
+                        <th>ሁኔታ / Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each lowItems}}
+                    <tr>
+                        <td><strong>{{itemName}}</strong><br><small>{{category}}</small></td>
+                        <td>{{sku}}</td>
+                        <td class="low">{{currentStock}} {{unit}}</td>
+                        <td>{{minLevel}} {{unit}}</td>
+                        <td>{{warehouseName}}</td>
+                        <td>
+                            <span class="low">LOW</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill progress-low" style="width: {{stockPercentage}}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <h3>💡 የሚመከሩ እርምጃዎች / Recommended Actions:</h3>
+            <ul>
+                <li>🔴 <strong>ወሳኝ እቃዎች:</strong> በአስቸኳይ የግዢ ትዕዛዝ ያዘጋጁ</li>
+                <li>🟡 <strong>ዝቅተኛ እቃዎች:</strong> በሳምንት ውስጥ የግዢ ትዕዛዝ ያቅዱ</li>
+                <li>📊 የአቅራቢዎች ዝርዝር እና የዋጋ ማነጻጸር ያደርጉ</li>
+                <li>🚚 የመላኪያ ጊዜ እና የመጋዘን አቅም ያጣሩ</li>
+            </ul>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{createPurchaseUrl}}" class="button">🛒 የግዢ ትዕዛዝ ፍጠር / Create Purchase Order</a>
+                <a href="{{viewInventoryUrl}}" class="button" style="background: #1976d2;">📦 ሙሉ ዝርዝር መመልከት / View Full Inventory</a>
+                <a href="{{reorderUrl}}" class="button" style="background: #4caf50;">🔄 ራስ-ሰር ትዕዛዝ / Auto Reorder</a>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📈 የዛሬ ድምር / Today's Summary:</h4>
+                <p>
+                    • ጠቅላላ እቃዎች: {{totalItems}} | 
+                    ወሳኝ: <span class="critical">{{criticalCount}}</span> | 
+                    ዝቅተኛ: <span class="low">{{lowCount}}</span> | 
+                    መደበኛ: {{normalCount}}
+                </p>
+                <p>• አሁን የሚያስፈልግ ግዢ ዋጋ: <strong>{{estimatedReorderCost}} ብር</strong></p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System - Inventory Management</p>
+            <p>ይህ ማሳወቂያ በቀን {{alertFrequency}} ይላካል። ለመቀናጀት: inventory@company.et</p>
+        </div>
+    </div>
+</body>
+</html>

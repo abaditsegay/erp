@@ -27,6 +27,7 @@ export const BUSINESS_TERMS: Record<string, EthiopianTranslation> = {
   logistics: { en: 'Logistics', am: 'ሎጂስቲክስ' },
   sales: { en: 'Sales', am: 'ሽያጭ' },
   reports: { en: 'Reports', am: 'ሪፖርቶች' },
+  analytics: { en: 'Analytics', am: 'ትንተና' },
   settings: { en: 'Settings', am: 'ቅንብሮች' },
 
   // Common Actions
@@ -44,6 +45,16 @@ export const BUSINESS_TERMS: Record<string, EthiopianTranslation> = {
   export: { en: 'Export', am: 'ወደ ውጭ ላክ' },
   import: { en: 'Import', am: 'ከውጭ አስገባ' },
   print: { en: 'Print', am: 'አትም' },
+
+  // Authentication Terms
+  login: { en: 'Login', am: 'ግባ' },
+  logout: { en: 'Logout', am: 'ውጣ' },
+  signin: { en: 'Sign In', am: 'ግባ' },
+  signout: { en: 'Sign Out', am: 'ውጣ' },
+  password: { en: 'Password', am: 'የይለፍ ቃል' },
+  username: { en: 'Username', am: 'የተጠቃሚ ስም' },
+  email: { en: 'Email', am: 'ኢሜይል' },
+  profile: { en: 'Profile', am: 'መገለጫ' },
 
   // Financial Terms
   payment: { en: 'Payment', am: 'ክፍያ' },
@@ -81,6 +92,7 @@ export const BUSINESS_TERMS: Record<string, EthiopianTranslation> = {
   price: { en: 'Price', am: 'ዋጋ' },
   cost: { en: 'Cost', am: 'ወጪ' },
   barcode: { en: 'Barcode', am: 'የእቃ ኮድ' },
+  inventory_advanced: { en: 'Advanced Inventory', am: 'የላቀ ዕቃ ክምችት' },
 
   // Logistics Terms
   shipment: { en: 'Shipment', am: 'መላኪያ' },

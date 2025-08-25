@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Invoice</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 700px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #1565c0, #1976d2); color: white; padding: 30px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .company-info h1 { margin: 0; font-size: 28px; }
+        .invoice-info { text-align: right; }
+        .invoice-number { font-size: 24px; font-weight: bold; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 4px; }
+        .content { padding: 30px; }
+        .billing-info { display: flex; justify-content: space-between; margin: 30px 0; }
+        .billing-section { flex: 1; margin-right: 20px; }
+        .billing-section:last-child { margin-right: 0; }
+        .invoice-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .invoice-table th, .invoice-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        .invoice-table th { background-color: #f8f9fa; font-weight: 600; }
+        .item-description { font-size: 14px; color: #666; margin-top: 5px; }
+        .amount { text-align: right; font-weight: bold; }
+        .total-section { background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 30px 0; }
+        .total-row { display: flex; justify-content: space-between; margin: 10px 0; }
+        .grand-total { font-size: 20px; font-weight: bold; color: #1565c0; border-top: 2px solid #1565c0; padding-top: 15px; }
+        .payment-info { background: #e3f2fd; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .button { display: inline-block; background: #1565c0; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .due-date-warning { background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; }
+        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 15px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .status-pending { background: #fff3e0; color: #f57c00; }
+        .status-overdue { background: #ffebee; color: #d32f2f; }
+        .status-paid { background: #e8f5e8; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="company-info">
+                    <h1>{{companyName}}</h1>
+                    <p>{{companyAddress}}</p>
+                    <p>ስልክ: {{companyPhone}} | ኢሜይል: {{companyEmail}}</p>
+                </div>
+                <div class="invoice-info">
+                    <div class="invoice-number">ደረሰኝ / INVOICE<br>#{{invoiceNumber}}</div>
+                    <p style="margin: 10px 0;">
+                        <span class="status-badge status-{{status}}">{{statusText}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="billing-info">
+                <div class="billing-section">
+                    <h3>👤 ደንበኛ መረጃ / Bill To:</h3>
+                    <p><strong>{{customerName}}</strong></p>
+                    <p>{{customerAddress}}</p>
+                    <p>{{customerCity}}, {{customerRegion}}</p>
+                    <p>ስልክ: {{customerPhone}}</p>
+                    <p>ኢሜይል: {{customerEmail}}</p>
+                    {{#if customerTinNumber}}
+                    <p><strong>TIN ቁጥር:</strong> {{customerTinNumber}}</p>
+                    {{/if}}
+                </div>
+                
+                <div class="billing-section">
+                    <h3>📅 ደረሰኝ ዝርዝር / Invoice Details:</h3>
+                    <table style="width: 100%; font-size: 14px;">
+                        <tr>
+                            <td><strong>የደረሰኝ ቀን / Invoice Date:</strong></td>
+                            <td>{{invoiceDate}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>የመክፈያ ቀን / Due Date:</strong></td>
+                            <td><strong style="color: #d32f2f;">{{dueDate}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>የክፍያ ሁኔታ / Payment Terms:</strong></td>
+                            <td>{{paymentTerms}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>የሽያጭ ወኪል / Sales Rep:</strong></td>
+                            <td>{{salesRepName}}</td>
+                        </tr>
+                        {{#if purchaseOrderNumber}}
+                        <tr>
+                            <td><strong>PO ቁጥር / PO Number:</strong></td>
+                            <td>{{purchaseOrderNumber}}</td>
+                        </tr>
+                        {{/if}}
+                    </table>
+                </div>
+            </div>
+            
+            <h3>📋 የተሸጡ እቃዎች / Items Sold:</h3>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">የእቃ ስም / Description</th>
+                        <th style="width: 10%;">መጠን / Qty</th>
+                        <th style="width: 15%;">አሃድ ዋጋ / Unit Price</th>
+                        <th style="width: 10%;">ቅናש / Discount</th>
+                        <th style="width: 15%;">ድምር / Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                    <tr>
+                        <td>
+                            <strong>{{itemName}}</strong>
+                            {{#if description}}
+                            <div class="item-description">{{description}}</div>
+                            {{/if}}
+                            {{#if itemCode}}
+                            <div class="item-description">Code: {{itemCode}}</div>
+                            {{/if}}
+                        </td>
+                        <td>{{quantity}} {{unit}}</td>
+                        <td class="amount">{{unitPrice}} ብር</td>
+                        <td class="amount">
+                            {{#if discountAmount}}
+                            {{discountAmount}} ብር
+                            {{else}}
+                            -
+                            {{/if}}
+                        </td>
+                        <td class="amount">{{lineTotal}} ብር</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            
+            <div class="total-section">
+                <div class="total-row">
+                    <span><strong>ንዑስ ድምር / Subtotal:</strong></span>
+                    <span class="amount">{{subtotal}} ብር</span>
+                </div>
+                
+                {{#if totalDiscount}}
+                <div class="total-row">
+                    <span><strong>ጠቅላላ ቅናش / Total Discount:</strong></span>
+                    <span class="amount" style="color: #d32f2f;">-{{totalDiscount}} ብር</span>
+                </div>
+                {{/if}}
+                
+                <div class="total-row">
+                    <span><strong>ተቀማጭ ዋጋ ታክስ (VAT) 15%:</strong></span>
+                    <span class="amount">{{vatAmount}} ብር</span>
+                </div>
+                
+                {{#if shippingCost}}
+                <div class="total-row">
+                    <span><strong>የማጓጓዣ ዋጋ / Shipping:</strong></span>
+                    <span class="amount">{{shippingCost}} ብር</span>
+                </div>
+                {{/if}}
+                
+                {{#if otherCharges}}
+                <div class="total-row">
+                    <span><strong>ሌሎች ክፍያዎች / Other Charges:</strong></span>
+                    <span class="amount">{{otherCharges}} ብር</span>
+                </div>
+                {{/if}}
+                
+                <div class="total-row grand-total">
+                    <span><strong>ጠቅላላ መጠን / TOTAL AMOUNT:</strong></span>
+                    <span class="amount">{{totalAmount}} ብር (ETB)</span>
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px; font-size: 14px; color: #666;">
+                    <p>በቃላት: {{amountInWords}} ብር</p>
+                    <p>In Words: {{amountInWordsEnglish}} Ethiopian Birr</p>
+                </div>
+            </div>
+            
+            {{#if isOverdue}}
+            <div class="due-date-warning">
+                <h4>⚠️ የክፍያ ማስታወሻ / Payment Notice:</h4>
+                <p>ይህ ደረሰኝ የመክፈያ ቀኑን አልፏል። እባክዎ በተቻለ ፍጥነት ይክፈሉ።</p>
+                <p>This invoice is overdue. Please make payment as soon as possible.</p>
+                <p><strong>የዘገየ ቀናት:</strong> {{overdueDays}} ቀናት</p>
+                {{#if lateFee}}
+                <p><strong>የዘገየ ክፍያ ወለድ:</strong> {{lateFee}} ብር</p>
+                {{/if}}
+            </div>
+            {{/if}}
+            
+            <div class="payment-info">
+                <h3>💳 የክፍያ መረጃ / Payment Information:</h3>
+                <div style="display: flex; justify-content: space-between;">
+                    <div>
+                        <h4>🏦 የባንክ መለያዎች / Bank Accounts:</h4>
+                        {{#each bankAccounts}}
+                        <p><strong>{{bankName}}:</strong><br>
+                           መለያ ቁጥር: {{accountNumber}}<br>
+                           {{#if swiftCode}}SWIFT: {{swiftCode}}{{/if}}
+                        </p>
+                        {{/each}}
+                    </div>
+                    <div>
+                        <h4>📱 ሞባይል ክፍያ / Mobile Payment:</h4>
+                        <p><strong>CBE Birr:</strong> {{cbeBirrNumber}}</p>
+                        <p><strong>M-Birr:</strong> {{mBirrNumber}}</p>
+                        <p><strong>HelloCash:</strong> {{helloCashNumber}}</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; padding: 10px; background: #fff3e0; border-radius: 4px;">
+                    <p><strong>⚠️ ክፍያ ሲያደርጉ:</strong> የደረሰኝ ቁጥር #{{invoiceNumber}} ን እንደ ማጣቀሻ ይጠቀሙ</p>
+                    <p><strong>When making payment:</strong> Use Invoice #{{invoiceNumber}} as reference</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{payOnlineUrl}}" class="button">💳 በመስመር ላይ ክፈሉ / Pay Online</a>
+                <a href="{{downloadPdfUrl}}" class="button" style="background: #4caf50;">📄 PDF ማውረድ / Download PDF</a>
+                <a href="{{contactUrl}}" class="button" style="background: #ff9800;">📞 ግንኙነት / Contact Us</a>
+            </div>
+            
+            <h3>📝 ውሎች እና ሁኔታዎች / Terms and Conditions:</h3>
+            <div style="font-size: 14px; color: #666; line-height: 1.6;">
+                <ul>
+                    <li>ክፍያ {{paymentTerms}} ውስጥ መደረግ አለበት</li>
+                    <li>Payment must be made within {{paymentTerms}}</li>
+                    <li>የዘገየ ክፍያ ወለድ በወር 2% ይተገበራል</li>
+                    <li>Late payment interest of 2% per month applies</li>
+                    <li>ሁሉም ክፍያዎች የኢትዮጵያ ብር (ETB) በሆነ መፈጸም አለባቸው</li>
+                    <li>All payments must be made in Ethiopian Birr (ETB)</li>
+                    <li>ለመመላሻ፣ እቃዎች ሳይነኩ እና በመጀመሪያ ሁኔታቸው ውስጥ መሆን አለባቸው</li>
+                    <li>For returns, items must be unused and in original condition</li>
+                </ul>
+            </div>
+            
+            <div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📞 የደንበኛ አገልግሎት / Customer Service:</h4>
+                <ul style="margin: 0; font-size: 14px;">
+                    <li><strong>ስልክ:</strong> {{customerServicePhone}}</li>
+                    <li><strong>ኢሜይል:</strong> billing@company.et</li>
+                    <li><strong>የስራ ሰዓት:</strong> ሰኞ - ዓርብ, 8:00 ጠ.ሰ - 5:00 ማ.ሰ</li>
+                    <li><strong>Business Hours:</strong> Monday - Friday, 8:00 AM - 5:00 PM</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System - Billing Department</p>
+            <p>TIN: {{companyTinNumber}} | VAT Registration: {{vatRegistrationNumber}}</p>
+            <p>አመሰግናለን! / Thank you for your business!</p>
+        </div>
+    </div>
+</body>
+</html>

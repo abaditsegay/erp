@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Order Approval Required</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #1976d2, #42a5f5); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .approval-box { background: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .amount { font-size: 18px; font-weight: bold; color: #1976d2; }
+        .button { display: inline-block; background: #1976d2; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .button.secondary { background: #6c757d; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .ethiopian-flag { color: #009639; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 የግዢ ትዕዛዝ ማጽደቅ / Purchase Order Approval</h1>
+            <p>Ethiopian Business Management System</p>
+        </div>
+        
+        <div class="content">
+            <h2>ጤና ይስጥልኝ {{approverName}},</h2>
+            
+            <div class="approval-box">
+                <h3>⚠️ የማጽደቅ ተግባር ያስፈልጋል / Approval Action Required</h3>
+                <p>የሚከተለው የግዢ ትዕዛዝ የእርስዎን ፈቃድ ይጠይቃል።</p>
+                <p>The following purchase order requires your approval.</p>
+            </div>
+            
+            <table class="details-table">
+                <tr>
+                    <th>የትዕዛዝ ቁጥር / Order Number:</th>
+                    <td><strong>{{orderNumber}}</strong></td>
+                </tr>
+                <tr>
+                    <th>አቅራቢ / Supplier:</th>
+                    <td>{{supplierName}}</td>
+                </tr>
+                <tr>
+                    <th>የተጠየቀ በ / Requested By:</th>
+                    <td>{{requestedBy}} - {{department}}</td>
+                </tr>
+                <tr>
+                    <th>የትዕዛዝ ቀን / Order Date:</th>
+                    <td>{{orderDate}}</td>
+                </tr>
+                <tr>
+                    <th>የአቅርቦት ቀን / Delivery Date:</th>
+                    <td>{{deliveryDate}}</td>
+                </tr>
+                <tr>
+                    <th>ጠቅላላ መጠን / Total Amount:</th>
+                    <td class="amount">{{totalAmount}} ብር (ETB)</td>
+                </tr>
+            </table>
+            
+            <h3>የተጠየቁ እቃዎች / Requested Items:</h3>
+            <ul>
+                {{#each items}}
+                <li>{{description}} - {{quantity}} {{unit}} × {{unitPrice}} ብር = {{totalPrice}} ብር</li>
+                {{/each}}
+            </ul>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{approveUrl}}" class="button">✅ ማጽደቅ / Approve</a>
+                <a href="{{rejectUrl}}" class="button secondary">❌ መቃወም / Reject</a>
+                <a href="{{viewUrl}}" class="button secondary">👁️ ዝርዝር መመልከት / View Details</a>
+            </div>
+            
+            <p><strong>ማስታወሻ / Note:</strong> ይህ ጥያቄ በ {{urgencyLevel}} ቅድሚያ ተቀምጦ ነው።<br>
+            This request is marked as {{urgencyLevel}} priority.</p>
+        </div>
+        
+        <div class="footer">
+            <p class="ethiopian-flag">🇪🇹 የኢትዮጵያ ንግድ ስራ አስተዳደር ስርዓት</p>
+            <p>Ethiopian Business Management System</p>
+            <p>ለበለጠ መረጃ ወይም እርዳታ: support@company.et | +251-11-XXX-XXXX</p>
+        </div>
+    </div>
+</body>
+</html>

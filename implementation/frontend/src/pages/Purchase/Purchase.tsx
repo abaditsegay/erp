@@ -22,10 +22,10 @@ import {
   LocalShipping,
   Analytics
 } from '@mui/icons-material';
-import MockPurchaseDataProvider from '../../contexts/MockPurchaseDataProvider';
+import { PurchaseDataProvider } from '../../contexts/PurchaseDataProvider';
 import PurchaseDashboard from '../../components/Purchase/PurchaseDashboard';
 import SupplierManagement from '../../components/Purchase/SupplierManagement';
-import SuppliersPage from './Suppliers/SuppliersPage';
+import SuppliersPageSimple from './Suppliers/SuppliersPageSimple';
 import PurchaseOrdersPage from './PurchaseOrders/PurchaseOrdersPage';
 import RequisitionsPage from './Requisitions/RequisitionsPage';
 import GRVPage from './GRV/GRVPage';
@@ -193,44 +193,42 @@ const PurchaseBreadcrumbs: React.FC = () => {
 
 const Purchase: React.FC = () => {
   return (
-    <MockPurchaseDataProvider>
-      <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
-        <PurchaseBreadcrumbs />
-        <Routes>
-          <Route path="/" element={<PurchaseHome />} />
-          <Route path="/dashboard" element={<PurchaseDashboard />} />
-          <Route path="/suppliers" element={<SupplierManagement />} />
-          <Route path="/suppliers/*" element={<SuppliersPage />} />
-          <Route path="/orders" element={<PurchaseOrdersPage />} />
-          <Route path="/requisitions" element={<RequisitionsPage />} />
-          <Route path="/goods-received" element={<GRVPage />} />
-          <Route path="/payments" element={
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-              <Typography variant="h4">Payment Management</Typography>
-              <Typography variant="body1" color="textSecondary">
-                Payment processing coming soon...
-              </Typography>
-            </Container>
-          } />
-          <Route path="/logistics" element={
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-              <Typography variant="h4">Logistics & Customs</Typography>
-              <Typography variant="body1" color="textSecondary">
-                Logistics tracking coming soon...
-              </Typography>
-            </Container>
-          } />
-          <Route path="/reports" element={
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-              <Typography variant="h4">Purchase Reports</Typography>
-              <Typography variant="body1" color="textSecondary">
-                Analytics and reporting coming soon...
-              </Typography>
-            </Container>
-          } />
-        </Routes>
-      </Box>
-    </MockPurchaseDataProvider>
+    <Box sx={{ flexGrow: 1, bgcolor: 'background.default', minHeight: '100vh' }}>
+      <PurchaseBreadcrumbs />
+      <Routes>
+        <Route path="/" element={<PurchaseHome />} />
+        <Route path="/dashboard" element={<PurchaseDashboard />} />
+        <Route path="/suppliers" element={<SupplierManagement />} />
+        <Route path="/suppliers/*" element={<SuppliersPageSimple />} />
+        <Route path="/orders" element={<PurchaseOrdersPage />} />
+        <Route path="/requisitions" element={<RequisitionsPage />} />
+        <Route path="/goods-received" element={<GRVPage />} />
+        <Route path="/payments" element={
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Typography variant="h4">Payment Management</Typography>
+            <Typography variant="body1" color="textSecondary">
+              Payment processing coming soon...
+            </Typography>
+          </Container>
+        } />
+        <Route path="/logistics" element={
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Typography variant="h4">Logistics & Customs</Typography>
+            <Typography variant="body1" color="textSecondary">
+              Logistics tracking coming soon...
+            </Typography>
+          </Container>
+        } />
+        <Route path="/reports" element={
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Typography variant="h4">Purchase Reports</Typography>
+            <Typography variant="body1" color="textSecondary">
+              Analytics and reporting coming soon...
+            </Typography>
+          </Container>
+        } />
+      </Routes>
+    </Box>
   );
 };
 

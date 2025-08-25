@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback Request</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #ff9800, #ffa726); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .feedback-request { background: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .service-summary { background: #f0f7ff; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .details-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details-table th, .details-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .details-table th { background-color: #f8f9fa; font-weight: 600; }
+        .rating-section { background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0; }
+        .star-rating { display: flex; gap: 5px; margin: 10px 0; }
+        .star { font-size: 24px; color: #e0e0e0; cursor: pointer; }
+        .star.active { color: #ffc107; }
+        .button { display: inline-block; background: #ff9800; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 10px 5px; font-weight: 600; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+        .incentive-box { background: #e8f5e8; padding: 15px; border-radius: 6px; margin: 15px 0; }
+        .feedback-categories { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; }
+        .category-item { flex: 1; min-width: 250px; background: #f9f9f9; padding: 15px; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💬 የደንበኛ አስተያየት ጥያቄ / Customer Feedback Request</h1>
+            <p>Ethiopian Customer Experience Team</p>
+        </div>
+        
+        <div class="content">
+            <h2>ውድ {{customerName}},</h2>
+            
+            <div class="feedback-request">
+                <h3>🙏 እርስዎን አስተያየትዎን እንለምናለን!</h3>
+                <h4>We would love to hear your feedback!</h4>
+                <p>በቅርቡ ከእኛ ጋር የነበረዎትን የንግድ ግንኙነት በተመለከተ የእርስዎን ግንዛቤ ማወቅ እንፈልጋለን።</p>
+                <p>We would like to know about your recent business experience with us.</p>
+            </div>
+            
+            <div class="service-summary">
+                <h3>📋 የአገልግሎት ማጠቃለያ / Service Summary:</h3>
+                <table class="details-table">
+                    <tr>
+                        <th>የደንበኛ መታወቂያ / Customer ID:</th>
+                        <td>{{customerId}}</td>
+                    </tr>
+                    <tr>
+                        <th>የትዕዛዝ ቁጥር / Order Number:</th>
+                        <td><strong>{{orderNumber}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>የአገልግሎት ቀን / Service Date:</th>
+                        <td>{{serviceDate}}</td>
+                    </tr>
+                    <tr>
+                        <th>የአገልግሎት አይነት / Service Type:</th>
+                        <td>{{serviceType}} / {{serviceTypeEn}}</td>
+                    </tr>
+                    <tr>
+                        <th>የሽያጭ ወኪል / Sales Representative:</th>
+                        <td>{{salesRepName}}</td>
+                    </tr>
+                    <tr>
+                        <th>ጠቅላላ መጠን / Total Amount:</th>
+                        <td>{{totalAmount}} ብር</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <h3>⭐ እርስዎን ግምገማዎን እንጠይቃለን / We Ask for Your Ratings:</h3>
+            <div class="feedback-categories">
+                <div class="category-item">
+                    <h4>🛍️ የምርት ጥራት</h4>
+                    <h5>Product Quality</h5>
+                    <div class="star-rating">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                    <p>የምርቶቹ ጥራት እና መስፈርቶች</p>
+                    <p>Quality and specifications of products</p>
+                </div>
+                
+                <div class="category-item">
+                    <h4>🚚 የማቅረቢያ አገልግሎት</h4>
+                    <h5>Delivery Service</h5>
+                    <div class="star-rating">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                    <p>የማቅረቢያ ፍጥነት እና ደህንነት</p>
+                    <p>Delivery speed and security</p>
+                </div>
+                
+                <div class="category-item">
+                    <h4>👥 የደንበኛ አገልግሎት</h4>
+                    <h5>Customer Service</h5>
+                    <div class="star-rating">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                    <p>የቡድናችን ስነ-ምግባር እና ምላሽ ሰጪነት</p>
+                    <p>Team professionalism and responsiveness</p>
+                </div>
+                
+                <div class="category-item">
+                    <h4>💰 የዋጋ ተመጣጣኝነት</h4>
+                    <h5>Value for Money</h5>
+                    <div class="star-rating">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                    <p>ዋጋ እና የምርት ጥራት ተመጣጣኝነት</p>
+                    <p>Price and product quality balance</p>
+                </div>
+            </div>
+            
+            <div class="rating-section">
+                <h3>📝 ዝርዝር ጥያቄዎች / Detailed Questions:</h3>
+                
+                <h4>1. ጠቅላላ እርካታ / Overall Satisfaction:</h4>
+                <p>ከአጠቃላይ አገልግሎታችን ጋር ምን ያህል እርክበዋል?</p>
+                <p>How satisfied are you with our overall service?</p>
+                <div class="star-rating">
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                </div>
+                
+                <h4>2. ማኻከርያ እድል / Recommendation Likelihood:</h4>
+                <p>እኛን ለወዳጅዎ እና ለቤተሰብዎ ማኻከር ይፈልጋሉ?</p>
+                <p>Would you recommend us to friends and family?</p>
+                <div class="star-rating">
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                </div>
+                
+                <h4>3. እንደገና የመግዢ እድል / Repeat Purchase Intention:</h4>
+                <p>ወደፊት እንደገና ከእኛ ጋር ንግድ ማድረግ ይፈልጋሉ?</p>
+                <p>Would you like to do business with us again in the future?</p>
+                <div class="star-rating">
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                </div>
+            </div>
+            
+            <h3>💭 ክፍት አስተያየቶች / Open Comments:</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <h4>የሚወዱት ነገሮች / What did you like most?</h4>
+                <div style="border: 1px solid #ddd; padding: 10px; min-height: 80px; background: white; border-radius: 4px; margin: 10px 0;">
+                    <p style="color: #999; margin: 0;">እርስዎ ከአገልግሎታችን ስለሚወዱት ነገር ይንገሩን...</p>
+                    <p style="color: #999; margin: 5px 0 0;">Tell us what you liked about our service...</p>
+                </div>
+                
+                <h4>የማሻሻያ አካባቢዎች / Areas for improvement?</h4>
+                <div style="border: 1px solid #ddd; padding: 10px; min-height: 80px; background: white; border-radius: 4px; margin: 10px 0;">
+                    <p style="color: #999; margin: 0;">ምን እናሻሽል ይችላል? ምክርዎን ይስጡን...</p>
+                    <p style="color: #999; margin: 5px 0 0;">What can we improve? Give us your suggestions...</p>
+                </div>
+                
+                <h4>ተጨማሪ አስተያየቶች / Additional comments?</h4>
+                <div style="border: 1px solid #ddd; padding: 10px; min-height: 80px; background: white; border-radius: 4px; margin: 10px 0;">
+                    <p style="color: #999; margin: 0;">ሌላ ማንኛውም ነገር እንድናውቅ የሚፈልጉት...</p>
+                    <p style="color: #999; margin: 5px 0 0;">Anything else you'd like us to know...</p>
+                </div>
+            </div>
+            
+            <div class="incentive-box">
+                <h3>🎁 የስጦታ ማበረታቻ / Feedback Incentive</h3>
+                <p><strong>ልዩ ቅናሽ!</strong> ሙሉ የአስተያየት ቅጽ በመሙላት የሚቀጥለው ግዢዎ ላይ 5% ቅናሽ ያግኙ!</p>
+                <p><strong>Special Discount!</strong> Complete the full feedback form and get 5% off your next purchase!</p>
+                <p><strong>ተጨማሪ ጥቅሞች:</strong></p>
+                <ul>
+                    <li>በወር አንድ ጊዜ የሚላከው ልዩ ቅናሽ ኢሜይል</li>
+                    <li>Monthly exclusive discount email updates</li>
+                    <li>ለአዲስ ምርቶች ቅድሚያ መጠቀም መብት</li>
+                    <li>Early access to new products</li>
+                    <li>በአመት ለማእከላዊ ተጠቃሚዎች ልዩ ክስተቶች</li>
+                    <li>Annual exclusive events for valued customers</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{feedbackFormUrl}}" class="button">📝 የአስተያየት ቅጽ መሙላት / Complete Feedback Form</a>
+                <a href="{{quickRatingUrl}}" class="button" style="background: #4caf50;">⚡ ፈጣን ግምገማ / Quick Rating</a>
+                <a href="{{contactUrl}}" class="button" style="background: #2196f3;">📞 ቀጥተኛ ግንኙነት / Direct Contact</a>
+            </div>
+            
+            <h3>⏰ የአስተያየት ቁሳቁስ ጊዜ / Feedback Timeline:</h3>
+            <div style="background: #e3f2fd; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <ul>
+                    <li><strong>የመሙላት ጊዜ:</strong> ከ5-10 ደቂቃዎች / <strong>Completion time:</strong> 5-10 minutes</li>
+                    <li><strong>የመጨረሻ ቀን:</strong> {{feedbackDeadline}} / <strong>Deadline:</strong> {{feedbackDeadline}}</li>
+                    <li><strong>የቅናሽ ኮድ:</strong> በ24 ሰዓት ውስጥ የሚደርስ / <strong>Discount code:</strong> Arrives within 24 hours</li>
+                    <li><strong>የምላሽ ጊዜ:</strong> ለጥያቄዎች በ48 ሰዓት ውስጥ / <strong>Response time:</strong> Within 48 hours for queries</li>
+                </ul>
+            </div>
+            
+            <h3>📞 የደንበኛ ግንኙነት / Customer Relations Contact:</h3>
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                    <div style="flex: 1; margin-right: 20px;">
+                        <h4>👥 የአስተያየት ቡድን / Feedback Team:</h4>
+                        <p><strong>ኃላፊ / Manager:</strong> {{feedbackManager}}</p>
+                        <p><strong>ስልክ / Phone:</strong> {{feedbackPhone}}</p>
+                        <p><strong>ኢሜይል / Email:</strong> {{feedbackEmail}}</p>
+                        <p><strong>WhatsApp:</strong> {{feedbackWhatsApp}}</p>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>🏢 የደንበኛ አገልግሎት / Customer Service:</h4>
+                        <p><strong>መስመር / Hotline:</strong> {{customerServiceHotline}}</p>
+                        <p><strong>ኢሜይል / Email:</strong> {{customerServiceEmail}}</p>
+                        <p><strong>የስራ ሰዓት / Business Hours:</strong></p>
+                        <p>ሰኞ-ዓርብ: 8:00 ጠ.ሰ - 6:00 ማ.ሰ</p>
+                        <p>Mon-Fri: 8:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>🔒 የግላዊነት ዋስትና / Privacy Assurance:</h4>
+                <ul>
+                    <li>የእርስዎ አስተያየት በሚስጥር ይንበረካል</li>
+                    <li>Your feedback will be kept confidential</li>
+                    <li>የግል መረጃዎ ለሦስተኛ ወገን አይሸጥም</li>
+                    <li>Personal information will not be sold to third parties</li>
+                    <li>የአስተያየት መረጃ ለአገልግሎት ማሻሻያ ብቻ ይውላል</li>
+                    <li>Feedback data is used only for service improvement</li>
+                </ul>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <h4>📈 ባለፈው የደንበኞች አስተያየቶች ላይ ያደረግናቸው ለውጦች / Recent Improvements Based on Customer Feedback:</h4>
+                <ul>
+                    <li>✅ የማቅረቢያ ጊዜ ከ7 ወደ 3 ቀናት ቅነሳ</li>
+                    <li>✅ Reduced delivery time from 7 to 3 days</li>
+                    <li>✅ የደንበኛ አገልግሎት 24/7 ማድረግ</li>
+                    <li>✅ Extended customer service to 24/7</li>
+                    <li>✅ አዲስ የሞባይል አፕሊኬሽን ማስጀመር</li>
+                    <li>✅ Launched new mobile application</li>
+                    <li>✅ የምርት ጥራት ቁጥጥር መጠናከር</li>
+                    <li>✅ Enhanced product quality control</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🇪🇹 የኢትዮጵያ የደንበኛ ተሞክሮ ቡድን</p>
+            <p>Ethiopian Customer Experience Team</p>
+            <p>የአስተያየት ቁጥር / Feedback ID: {{feedbackId}} | ቀን / Date: {{requestDate}}</p>
+            <p>አመሰግናለን! የእርስዎ አስተያየት በጣም ጠቃሚ ነው። / Thank you! Your feedback is very valuable to us.</p>
+        </div>
+    </div>
+</body>
+</html>

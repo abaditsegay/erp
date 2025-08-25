@@ -43,13 +43,16 @@ import {
   Schedule,
   Cancel,
 } from '@mui/icons-material';
-import { useMockPurchaseData } from '../../../contexts/MockPurchaseDataProvider';
-import { PurchaseOrder, PurchaseOrderStatus, EthiopianRegion } from '../../../types/purchase';
-import { CreatePurchaseOrderDialog } from '../../../components/Purchase/CreatePurchaseOrderDialog';
-import { PurchaseOrderDetailsDialog } from '../../../components/Purchase/PurchaseOrderDetailsDialog';
+import { usePurchaseData } from '../../../contexts/PurchaseDataProvider';
+import { PurchaseOrder } from '../../../services/purchaseDataService';
+import { EthiopianRegion } from '../../../types/purchase';
+
+type PurchaseOrderStatus = 'DRAFT' | 'PENDING_APPROVAL' | 'APPROVED' | 'SENT' | 'RECEIVED' | 'CANCELLED';
+// import { CreatePurchaseOrderDialog } from '../../../components/Purchase/CreatePurchaseOrderDialog';
+// import { PurchaseOrderDetailsDialog } from '../../../components/Purchase/PurchaseOrderDetailsDialog';
 
 const PurchaseOrdersPage: React.FC = () => {
-  const { purchaseOrders, suppliers } = useMockPurchaseData();
+  const { purchaseOrders, suppliers } = usePurchaseData();
   const loading = false; // Mock loading state
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<PurchaseOrderStatus | 'ALL'>('ALL');
@@ -63,7 +66,7 @@ const PurchaseOrdersPage: React.FC = () => {
   const filteredOrders = useMemo(() => {
     return purchaseOrders.filter(order => {
       const matchesSearch = 
-        order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.poNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.supplier.name.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesStatus = statusFilter === 'ALL' || order.status === statusFilter;
@@ -78,7 +81,7 @@ const PurchaseOrdersPage: React.FC = () => {
     const total = purchaseOrders.length;
     const pending = purchaseOrders.filter(po => po.status === 'PENDING_APPROVAL').length;
     const approved = purchaseOrders.filter(po => po.status === 'APPROVED').length;
-    const received = purchaseOrders.filter(po => po.status === 'FULLY_RECEIVED').length;
+    const received = purchaseOrders.filter(po => po.status === 'RECEIVED').length;
     const totalValue = purchaseOrders.reduce((sum, po) => sum + po.totalAmount, 0);
     
     return { total, pending, approved, received, totalValue };
@@ -109,17 +112,12 @@ const PurchaseOrdersPage: React.FC = () => {
 
   const getStatusChip = (status: PurchaseOrderStatus) => {
     const statusConfig: Record<PurchaseOrderStatus, { color: any; icon: any }> = {
-      [PurchaseOrderStatus.DRAFT]: { color: 'default' as const, icon: <EditIcon fontSize="small" /> },
-      [PurchaseOrderStatus.PENDING_APPROVAL]: { color: 'warning' as const, icon: <PendingIcon fontSize="small" /> },
-      [PurchaseOrderStatus.APPROVED]: { color: 'success' as const, icon: <ApproveIcon fontSize="small" /> },
-      [PurchaseOrderStatus.SENT_TO_SUPPLIER]: { color: 'info' as const, icon: <ShipIcon fontSize="small" /> },
-      [PurchaseOrderStatus.ACKNOWLEDGED]: { color: 'primary' as const, icon: <CheckCircle fontSize="small" /> },
-      [PurchaseOrderStatus.PARTIALLY_RECEIVED]: { color: 'warning' as const, icon: <Schedule fontSize="small" /> },
-      [PurchaseOrderStatus.FULLY_RECEIVED]: { color: 'success' as const, icon: <CheckCircle fontSize="small" /> },
-      [PurchaseOrderStatus.INVOICED]: { color: 'info' as const, icon: <CheckCircle fontSize="small" /> },
-      [PurchaseOrderStatus.PAID]: { color: 'success' as const, icon: <CheckCircle fontSize="small" /> },
-      [PurchaseOrderStatus.CANCELLED]: { color: 'error' as const, icon: <Cancel fontSize="small" /> },
-      [PurchaseOrderStatus.CLOSED]: { color: 'default' as const, icon: <CheckCircle fontSize="small" /> },
+      'DRAFT': { color: 'default' as const, icon: <EditIcon fontSize="small" /> },
+      'PENDING_APPROVAL': { color: 'warning' as const, icon: <PendingIcon fontSize="small" /> },
+      'APPROVED': { color: 'success' as const, icon: <ApproveIcon fontSize="small" /> },
+      'SENT': { color: 'info' as const, icon: <ShipIcon fontSize="small" /> },
+      'RECEIVED': { color: 'success' as const, icon: <CheckCircle fontSize="small" /> },
+      'CANCELLED': { color: 'error' as const, icon: <Cancel fontSize="small" /> },
     };
 
     const config = statusConfig[status];
@@ -264,7 +262,7 @@ const PurchaseOrdersPage: React.FC = () => {
                   <MenuItem value="APPROVED">Approved</MenuItem>
                   <MenuItem value="SENT_TO_SUPPLIER">Sent to Supplier</MenuItem>
                   <MenuItem value="ACKNOWLEDGED">Acknowledged</MenuItem>
-                  <MenuItem value="FULLY_RECEIVED">Received</MenuItem>
+                  <MenuItem value="RECEIVED">Received</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -331,7 +329,7 @@ const PurchaseOrdersPage: React.FC = () => {
                     <TableRow key={order.id} hover>
                       <TableCell>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-                          {order.orderNumber}
+                          {order.poNumber}
                         </Typography>
                       </TableCell>
                       <TableCell>
@@ -352,7 +350,7 @@ const PurchaseOrdersPage: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                          {formatCurrency(order.totalAmount, order.currency)}
+                          {formatCurrency(order.totalAmount, order.currency as 'USD' | 'ETB')}
                         </Typography>
                       </TableCell>
                       <TableCell>
@@ -425,20 +423,20 @@ const PurchaseOrdersPage: React.FC = () => {
       </Menu>
 
       {/* Create Purchase Order Dialog */}
-      <CreatePurchaseOrderDialog
+      {/* <CreatePurchaseOrderDialog
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
         suppliers={suppliers}
-      />
+      /> */}
 
       {/* Purchase Order Details Dialog */}
-      {selectedOrder && (
+      {/* {selectedOrder && (
         <PurchaseOrderDetailsDialog
           open={detailsDialogOpen}
           onClose={() => setDetailsDialogOpen(false)}
           purchaseOrder={selectedOrder}
         />
-      )}
+      )} */}
     </Box>
   );
 };
